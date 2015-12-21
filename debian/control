@@ -38,3 +38,11 @@ Description: iptables development files
  packet filter rules in the Linux kernel. This package contains
  the available library (libipq, libiptc, libxtables), header,
  documentation and related files for iptables development.
+
+Package: iptables-nftables-compat
+Architecture: linux-any
+Priority: optional
+Depends: ${misc:Depends}, ${shlibs:Depends}, libxtables10 (=${binary:Version})
+Description: iptables compat tools for nftables
+ this package includes the compat tools to load iptables, ip6tables, arptables
+ and ebtables rules to the nf_tables kernel subsystem.

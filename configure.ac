@@ -1,8 +1,8 @@
 
-AC_INIT([iptables], [1.4.21])
+AC_INIT([iptables], [1.6.0])
 
 # See libtool.info "Libtool's versioning system"
-libxtables_vcurrent=10
+libxtables_vcurrent=11
 libxtables_vage=0
 
 AC_CONFIG_AUX_DIR([build-aux])
@@ -53,13 +53,16 @@ AC_ARG_ENABLE([libipq],
 	[enable_libipq="$enableval"], [enable_libipq="no"])
 AC_ARG_ENABLE([bpf-compiler],
 	AS_HELP_STRING([--enable-bpf-compiler], [Build bpf compiler]),
-	[enable_bpfc="yes"], [enable_bpfc="no"])
+	[enable_bpfc="$enableval"], [enable_bpfc="no"])
 AC_ARG_ENABLE([nfsynproxy],
 	AS_HELP_STRING([--enable-nfsynproxy], [Build SYNPROXY configuration tool]),
-	[enable_nfsynproxy="yes"], [enable_nfsynproxy="no"])
+	[enable_nfsynproxy="$enableval"], [enable_nfsynproxy="no"])
 AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=PATH],
 	[Path to the pkgconfig directory [[LIBDIR/pkgconfig]]]),
 	[pkgconfigdir="$withval"], [pkgconfigdir='${libdir}/pkgconfig'])
+AC_ARG_ENABLE([nftables],
+	AS_HELP_STRING([--disable-nftables], [Do not build nftables compat]),
+	[enable_nftables="$enableval"], [enable_nftables="yes"])
 
 libiptc_LDFLAGS2="";
 AX_CHECK_LINKER_FLAGS([-Wl,--no-as-needed],
@@ -75,7 +78,12 @@ AC_LINK_IFELSE([AC_LANG_SOURCE([int main(void) {}])],
 )
 LDFLAGS="$saved_LDFLAGS";
 
-blacklist_modules="";
+blacklist_modules=""
+blacklist_x_modules=""
+blacklist_b_modules=""
+blacklist_a_modules=""
+blacklist_4_modules=""
+blacklist_6_modules=""
 
 AC_CHECK_HEADERS([linux/dccp.h linux/ip_vs.h linux/magic.h linux/proc_fs.h])
 if test "$ac_cv_header_linux_dccp_h" != "yes"; then
@@ -94,7 +102,6 @@ if test "$nfconntrack" -ne 1; then
 	echo "WARNING: libnetfilter_conntrack not found, connlabel match will not be built";
 fi;
 
-AC_SUBST([blacklist_modules])
 AC_CHECK_SIZEOF([struct ip6_hdr], [], [#include <netinet/ip6.h>])
 
 AM_CONDITIONAL([ENABLE_STATIC], [test "$enable_static" = "yes"])
@@ -106,6 +113,7 @@ AM_CONDITIONAL([ENABLE_DEVEL], [test "$enable_devel" = "yes"])
 AM_CONDITIONAL([ENABLE_LIBIPQ], [test "$enable_libipq" = "yes"])
 AM_CONDITIONAL([ENABLE_BPFC], [test "$enable_bpfc" = "yes"])
 AM_CONDITIONAL([ENABLE_SYNCONF], [test "$enable_nfsynproxy" = "yes"])
+AM_CONDITIONAL([ENABLE_NFTABLES], [test "$enable_nftables" = "yes"])
 
 if test "x$enable_bpfc" = "xyes" || test "x$enable_nfsynproxy" = "xyes"; then
 	AC_CHECK_LIB(pcap, pcap_compile,, AC_MSG_ERROR(missing libpcap library required by bpf compiler or nfsynproxy tool))
@@ -114,6 +122,58 @@ fi
 PKG_CHECK_MODULES([libnfnetlink], [libnfnetlink >= 1.0],
 	[nfnetlink=1], [nfnetlink=0])
 AM_CONDITIONAL([HAVE_LIBNFNETLINK], [test "$nfnetlink" = 1])
+
+if test "x$enable_nftables" = "xyes"; then
+	PKG_CHECK_MODULES([libmnl], [libmnl >= 1.0], [mnl=1], [mnl=0])
+
+	PKG_CHECK_MODULES([libnftnl], [libnftnl >= 1.0.5], [nftables=1], [nftables=0])
+
+	AM_PROG_LEX
+	AC_PROG_YACC
+
+	if test -z "$ac_cv_prog_YACC"
+	then
+		echo "*** Error: No suitable bison/yacc found. ***"
+		echo "    Please install the 'bison' package."
+		exit 1
+	fi
+	if test -z "$ac_cv_prog_LEX"
+	then
+	        echo "*** Error: No suitable flex/lex found. ***"
+	        echo "    Please install the 'flex' package."
+	        exit 1
+	fi
+
+	AC_MSG_CHECKING(flex version)
+	flex_version=`$ac_cv_prog_LEX --version | sed 's/version//g' | awk '/flex/ {print $2}'`
+	flex_major=`echo $flex_version| cut -d . -f 1`
+	flex_minor=`echo $flex_version| cut -d . -f 2`
+	flex_rev=`echo $flex_version| cut -d . -f 3`
+
+	if test "$flex_major" -eq "2" && test "$flex_minor" -eq "5" && test "$flex_rev" -ge "33"; then
+		AC_MSG_RESULT([$flex_version. OK])
+	else
+		AC_MSG_WARN([flex version $flex_version found.
+		Version 2.5.33 or greater is required. You may experience problems
+		while compilating the nftables compatibility layer for iptables.
+		Please, consider to upgrade flex.])
+	fi
+fi
+
+AM_CONDITIONAL([HAVE_LIBMNL], [test "$mnl" = 1])
+AM_CONDITIONAL([HAVE_LIBNFTNL], [test "$nftables" = 1])
+
+if test "$nftables" != 1; then
+	blacklist_b_modules="$blacklist_b_modules limit mark nflog mangle"
+	blacklist_a_modules="$blacklist_a_modules mangle"
+fi
+
+AC_SUBST([blacklist_modules])
+AC_SUBST([blacklist_x_modules])
+AC_SUBST([blacklist_b_modules])
+AC_SUBST([blacklist_a_modules])
+AC_SUBST([blacklist_4_modules])
+AC_SUBST([blacklist_6_modules])
 
 regular_CFLAGS="-Wall -Waggregate-return -Wmissing-declarations \
 	-Wmissing-prototypes -Wredundant-decls -Wshadow -Wstrict-prototypes \
@@ -182,6 +242,7 @@ Iptables Configuration:
   Large file support:			${enable_largefile}
   BPF utils support:			${enable_bpfc}
   nfsynproxy util support:		${enable_nfsynproxy}
+  nftables support:			${enable_nftables}
 
 Build parameters:
   Put plugins into executable (static):	${enable_static}

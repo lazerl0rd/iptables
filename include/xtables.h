@@ -220,12 +220,12 @@ struct xtables_match
 	const char *real_name;
 
 	/* Revision of match (0 by default). */
-	u_int8_t revision;
+	uint8_t revision;
 
 	/* Extension flags */
-	u_int8_t ext_flags;
+	uint8_t ext_flags;
 
-	u_int16_t family;
+	uint16_t family;
 
 	/* Size of match data. */
 	size_t size;
@@ -297,12 +297,12 @@ struct xtables_target
 	const char *real_name;
 
 	/* Revision of target (0 by default). */
-	u_int8_t revision;
+	uint8_t revision;
 
 	/* Extension flags */
-	u_int8_t ext_flags;
+	uint8_t ext_flags;
 
-	u_int16_t family;
+	uint16_t family;
 
 
 	/* Size of target data. */
@@ -373,7 +373,7 @@ struct xtables_rule_match {
  */
 struct xtables_pprot {
 	const char *name;
-	u_int8_t num;
+	uint8_t num;
 };
 
 enum xtables_tryload {
@@ -401,6 +401,7 @@ struct xtables_globals
 	struct option *orig_opts;
 	struct option *opts;
 	void (*exit_err)(enum xtables_exittype status, const char *msg, ...) __attribute__((noreturn, format(printf,2,3)));
+	int (*compat_rev)(const char *name, uint8_t rev, int opt);
 };
 
 #define XT_GETOPT_TABLEEND {.name = NULL, .has_arg = false}
@@ -432,6 +433,8 @@ extern struct xtables_match *xtables_find_match(const char *name,
 	enum xtables_tryload, struct xtables_rule_match **match);
 extern struct xtables_target *xtables_find_target(const char *name,
 	enum xtables_tryload);
+extern int xtables_compatible_revision(const char *name, uint8_t revision,
+				       int opt);
 
 extern void xtables_rule_matches_free(struct xtables_rule_match **matches);
 
@@ -446,12 +449,12 @@ extern bool xtables_strtoul(const char *, char **, uintmax_t *,
 extern bool xtables_strtoui(const char *, char **, unsigned int *,
 	unsigned int, unsigned int);
 extern int xtables_service_to_port(const char *name, const char *proto);
-extern u_int16_t xtables_parse_port(const char *port, const char *proto);
+extern uint16_t xtables_parse_port(const char *port, const char *proto);
 extern void
 xtables_parse_interface(const char *arg, char *vianame, unsigned char *mask);
 
 /* this is a special 64bit data type that is 8-byte aligned */
-#define aligned_u64 u_int64_t __attribute__((aligned(8)))
+#define aligned_u64 uint64_t __attribute__((aligned(8)))
 
 extern struct xtables_globals *xt_params;
 #define xtables_error (xt_params->exit_err)
@@ -514,7 +517,7 @@ extern void xtables_print_num(uint64_t number, unsigned int format);
 #endif
 
 extern const struct xtables_pprot xtables_chain_protos[];
-extern u_int16_t xtables_parse_protocol(const char *s);
+extern uint16_t xtables_parse_protocol(const char *s);
 
 /* kernel revision handling */
 extern int kernel_version;

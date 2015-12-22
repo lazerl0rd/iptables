@@ -7,7 +7,8 @@ usr/sbin/iptables sbin
 usr/sbin/iptables-restore sbin
 usr/sbin/iptables-save sbin
 usr/sbin/nf* usr/sbin
-lib/xtables
+lib/xtables/libip*.so
+lib/xtables/libxt_*.so
 iptables/iptables-apply usr/sbin
 iptables/iptables.xslt usr/share/iptables
 usr/share/man/man8

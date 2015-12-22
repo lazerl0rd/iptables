@@ -1,8 +1,8 @@
 Source: iptables
 Section: net
 Priority: important
-Maintainer: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Uploaders: Laurence J. Lane <ljlane@debian.org>
+Maintainer: iptables devel team <pkg-netfilter-devel@lists.alioth.debian.org>
+Uploaders: Laurence J. Lane <ljlane@debian.org>, Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
 Build-Depends: debhelper (>= 9), autoconf, automake, libtool (>=2.2.6), libnfnetlink-dev, libnetfilter-conntrack-dev, libnetfilter-conntrack3, dh-autoreconf, libnftnl-dev, libmnl-dev, flex, bison
 Standards-Version: 3.9.5
 Homepage: http://www.netfilter.org/

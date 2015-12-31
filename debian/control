@@ -6,6 +6,8 @@ Uploaders: Laurence J. Lane <ljlane@debian.org>, Arturo Borrero Gonzalez <arturo
 Build-Depends: debhelper (>= 9), autoconf, automake, libtool (>=2.2.6), libnfnetlink-dev, libnetfilter-conntrack-dev, libnetfilter-conntrack3, dh-autoreconf, libnftnl-dev, libmnl-dev, flex, bison
 Standards-Version: 3.9.5
 Homepage: http://www.netfilter.org/
+Vcs-Git: https://alioth.debian.org/anonscm/git/pkg-netfilter/pkg-netfilter.git
+Vcs-Browser: https://alioth.debian.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=pkg-netfilter/pkg-netfilter.git
 
 Package: iptables
 Architecture: linux-any

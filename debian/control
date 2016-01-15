@@ -47,3 +47,11 @@ Recommends: nftables
 Description: iptables compat tools for nftables
  this package includes the compat tools to load iptables, ip6tables, arptables
  and ebtables rules to the nf_tables kernel subsystem.
+ .
+ The tools are called: 'iptables-compat', 'iptables-compat-save',
+ 'iptables-compat-restore', 'ip6tables-compat', 'ip6tables-compat-save',
+ 'ip6tables-compat-restore', 'arptables-compat' and 'ebtables-compat'.
+ .
+ A basic way to understand this compat stuff is to load the ruleset
+ skeleton, i.e: a first call `iptables-compat -L'. Then, you can use nft,
+ i.e: `nft list ruleset'. Same for the other families.

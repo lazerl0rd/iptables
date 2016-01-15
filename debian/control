@@ -18,6 +18,8 @@ Build-Depends: autoconf,
                libtool (>= 2.2.6)
 Standards-Version: 3.9.6
 Homepage: http://www.netfilter.org/
+Vcs-Git: https://alioth.debian.org/anonscm/git/pkg-netfilter/pkg-netfilter.git
+Vcs-Browser: https://alioth.debian.org/scm/browser.php?group_id=100238
 
 Package: iptables
 Architecture: linux-any

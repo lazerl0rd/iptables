@@ -54,7 +54,9 @@ Description: iptables development files
 Package: iptables-nftables-compat
 Architecture: linux-any
 Priority: optional
-Depends: iptables (=${binary:Version}),
+Depends: arptables,
+         ebtables,
+         iptables (=${binary:Version}),
          libxtables11 (=${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}

@@ -42,7 +42,7 @@ Description: iptables development files
 Package: iptables-nftables-compat
 Architecture: linux-any
 Priority: optional
-Depends: ${misc:Depends}, ${shlibs:Depends}, libxtables11 (=${binary:Version})
+Depends: ${misc:Depends}, ${shlibs:Depends}, libxtables11 (=${binary:Version}), iptables (=${binary:Version})
 Recommends: nftables
 Description: iptables compat tools for nftables
  this package includes the compat tools to load iptables, ip6tables, arptables

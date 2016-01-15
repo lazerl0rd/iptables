@@ -16,7 +16,7 @@ Build-Depends: autoconf,
                libnfnetlink-dev,
                libnftnl-dev,
                libtool (>= 2.2.6)
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Homepage: http://www.netfilter.org/
 
 Package: iptables

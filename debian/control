@@ -9,7 +9,7 @@ Homepage: http://www.netfilter.org/
 
 Package: iptables
 Architecture: linux-any
-Depends: ${misc:Depends}, ${shlibs:Depends}, libxtables10 (=${binary:Version})
+Depends: ${misc:Depends}, ${shlibs:Depends}, libxtables11 (=${binary:Version})
 Description: administration tools for packet filtering and NAT
  iptables is the userspace command line program used to configure
  the Linux packet filtering ruleset. It is targeted towards system
@@ -18,7 +18,7 @@ Description: administration tools for packet filtering and NAT
  iptables package also includes ip6tables. ip6tables is used for
  configuring the IPv6 packet filter
 
-Package: libxtables10
+Package: libxtables11
 Architecture: linux-any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Replaces: iptables (<< 1.4.16.3-3)
@@ -42,7 +42,7 @@ Description: iptables development files
 Package: iptables-nftables-compat
 Architecture: linux-any
 Priority: optional
-Depends: ${misc:Depends}, ${shlibs:Depends}, libxtables10 (=${binary:Version})
+Depends: ${misc:Depends}, ${shlibs:Depends}, libxtables11 (=${binary:Version})
 Recommends: nftables
 Description: iptables compat tools for nftables
  this package includes the compat tools to load iptables, ip6tables, arptables

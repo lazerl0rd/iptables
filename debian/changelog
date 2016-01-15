@@ -1,3 +1,28 @@
+iptables (1.6.0-1) unstable; urgency=medium
+
+  * [615f9fc] Imported Upstream version 1.6.0
+  * [7caa8f4] d/patches/0104-lintian_hyphens.patch: refresh patch
+  * [b1d1b79] d/patches/0301-install_iptables_apply.patch: refresh patch
+  * [a2adeaf] d/control: update build-deps
+  * [0c76237] d/control: Arturo is now Maintainer, Laurence is Uploader
+  * [c13773c] d/control: new iptables-nftables-compat binary package
+  * [05be2ad] d/control: Maintainer is now the alioth team
+  * [569bc44] d/: put arp and bridge modules in iptables-nftables-compat package
+  * [90738ae] d/copyright: refresh copyright file
+  * [57d17b1] iptables-nftables-compat: include compat tools (links)
+  * [4940e7a] d/control: recommends nftables in the iptables-nftables-compat package
+  * [7814c21] d/control: give more information in the description of iptables-nftables-compat
+  * [d41dd7d] d/control: bump libxtables10 to libxtables11
+  * [81bb804] d/control: the iptables-nftables-compat package depends on iptables
+  * [a5b4148] d/: wrap-and-sort
+  * [d0c6615] d/control: bump standars to 3.9.6
+  * [9ae565f] iptables-nftables-compat: link compat manpages to the originals
+  * [d0f191f] d/patches: refresh 0101-changelog.patch
+  * [ef507da] iptables-nftables-compat: link manpage also for xtables-compat-multi
+  * [453ee4c] d/control: add Vcs-Git and Vcs-Browser fields
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Fri, 15 Jan 2016 13:23:10 +0100
+
 iptables (1.4.21-2) unstable; urgency=medium
 
   * correct _dhopts var to enable autoreconf. Closes: #744968

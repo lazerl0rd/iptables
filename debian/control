@@ -2,16 +2,28 @@ Source: iptables
 Section: net
 Priority: important
 Maintainer: iptables devel team <pkg-netfilter-devel@lists.alioth.debian.org>
-Uploaders: Laurence J. Lane <ljlane@debian.org>, Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Build-Depends: debhelper (>= 9), autoconf, automake, libtool (>=2.2.6), libnfnetlink-dev, libnetfilter-conntrack-dev, libnetfilter-conntrack3, dh-autoreconf, libnftnl-dev, libmnl-dev, flex, bison
-Standards-Version: 3.9.5
+Uploaders: Laurence J. Lane <ljlane@debian.org>,
+           Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+Build-Depends: autoconf,
+               automake,
+               bison,
+               debhelper (>= 9),
+               dh-autoreconf,
+               flex,
+               libmnl-dev,
+               libnetfilter-conntrack-dev,
+               libnetfilter-conntrack3,
+               libnfnetlink-dev,
+               libnftnl-dev,
+               libtool (>= 2.2.6)
+Standards-Version: 3.9.6
 Homepage: http://www.netfilter.org/
 Vcs-Git: https://alioth.debian.org/anonscm/git/pkg-netfilter/pkg-netfilter.git
 Vcs-Browser: https://alioth.debian.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=pkg-netfilter/pkg-netfilter.git
 
 Package: iptables
 Architecture: linux-any
-Depends: ${misc:Depends}, ${shlibs:Depends}, libxtables10 (=${binary:Version})
+Depends: libxtables11 (=${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Description: administration tools for packet filtering and NAT
  iptables is the userspace command line program used to configure
  the Linux packet filtering ruleset. It is targeted towards system
@@ -20,7 +32,7 @@ Description: administration tools for packet filtering and NAT
  iptables package also includes ip6tables. ip6tables is used for
  configuring the IPv6 packet filter
 
-Package: libxtables10
+Package: libxtables11
 Architecture: linux-any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Replaces: iptables (<< 1.4.16.3-3)
@@ -31,8 +43,8 @@ Description: netfilter xtables library
 Package: iptables-dev
 Architecture: linux-any
 Priority: optional
-Depends: ${misc:Depends}, iptables (=${binary:Version})
-Conflicts: iptables (<<1.4.2-2)
+Depends: iptables (=${binary:Version}), ${misc:Depends}
+Conflicts: iptables (<< 1.4.2-2)
 Breaks: linux-libc-dev (<< 3.5)
 Section: devel
 Description: iptables development files
@@ -44,7 +56,21 @@ Description: iptables development files
 Package: iptables-nftables-compat
 Architecture: linux-any
 Priority: optional
-Depends: ${misc:Depends}, ${shlibs:Depends}, libxtables10 (=${binary:Version})
+Depends: arptables,
+         ebtables,
+         iptables (=${binary:Version}),
+         libxtables11 (=${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Recommends: nftables
 Description: iptables compat tools for nftables
  this package includes the compat tools to load iptables, ip6tables, arptables
  and ebtables rules to the nf_tables kernel subsystem.
+ .
+ The tools are called: 'iptables-compat', 'iptables-compat-save',
+ 'iptables-compat-restore', 'ip6tables-compat', 'ip6tables-compat-save',
+ 'ip6tables-compat-restore', 'arptables-compat' and 'ebtables-compat'.
+ .
+ A basic way to understand this compat stuff is to load the ruleset
+ skeleton, i.e: a first call `iptables-compat -L'. Then, you can use nft,
+ i.e: `nft list ruleset'. Same for the other families.

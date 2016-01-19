@@ -1,4 +1,4 @@
-iptables (1.6.0-1) unstable; urgency=medium
+iptables (1.6.0-1) experimental; urgency=medium
 
   * [615f9fc] Imported Upstream version 1.6.0
   * [7caa8f4] d/patches/0104-lintian_hyphens.patch: refresh patch

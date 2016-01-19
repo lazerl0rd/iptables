@@ -20,6 +20,7 @@ iptables (1.6.0-1) experimental; urgency=medium
   * [d0f191f] d/patches: refresh 0101-changelog.patch
   * [ef507da] iptables-nftables-compat: link manpage also for xtables-compat-multi
   * [453ee4c] d/control: add Vcs-Git and Vcs-Browser fields
+  * [8e52d5b] d/changelog: upload is for experimental rather than unstable
 
  -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Fri, 15 Jan 2016 13:23:10 +0100
 

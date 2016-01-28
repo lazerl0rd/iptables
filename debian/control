@@ -22,6 +22,7 @@ Vcs-Git: https://alioth.debian.org/anonscm/git/pkg-netfilter/pkg-netfilter.git
 Vcs-Browser: https://alioth.debian.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=pkg-netfilter/pkg-netfilter.git
 
 Package: iptables
+Multi-Arch: foreign
 Architecture: linux-any
 Depends: libxtables11 (=${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Description: administration tools for packet filtering and NAT

@@ -1,4 +1,4 @@
-lib/xtables/libarpt_*.so
-lib/xtables/libebt_*.so
+usr/lib/*/xtables/libarpt_*.so
+usr/lib/*/xtables/libebt_*.so
 usr/sbin/*-compat*		sbin
 usr/sbin/xtables-compat-multi	sbin

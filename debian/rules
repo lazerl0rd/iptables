@@ -2,17 +2,21 @@
 
 export V=1
 
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+LIB_DIR := /usr/lib/$(DEB_HOST_MULTIARCH)
+
 _dhopts := --with autoreconf
 
 _shlibdeps := \
-  -a -Xlib/xtables \
+  -a -X$(LIB_DIR) \
   -l$(CURDIR)/debian/build/extensions/.libs
 
 _configure := \
   --disable-libipq \
   --enable-devel \
-  --libdir=/lib \
-  --with-xtlibdir=/lib/xtables
+  --libdir=$(LIB_DIR) \
+  --with-xtlibdir=$(LIB_DIR)/xtables
+
 
 %:
 	dh $@ $(_dhopts)

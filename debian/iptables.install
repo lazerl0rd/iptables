@@ -1,8 +1,8 @@
 iptables/iptables-apply usr/sbin
 iptables/iptables.xslt usr/share/iptables
-lib/libip*.so.*
-lib/xtables/libip*.so
-lib/xtables/libxt_*.so
+usr/lib/*/libip*.so.*
+usr/lib/*/xtables/libip*.so
+usr/lib/*/xtables/libxt_*.so
 usr/sbin/ip6tables sbin
 usr/sbin/ip6tables-restore sbin
 usr/sbin/ip6tables-save sbin

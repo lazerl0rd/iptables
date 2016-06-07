@@ -52,8 +52,8 @@ Architecture: linux-any
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libxtables11 (=${binary:Version}), ${misc:Depends}
-Conflicts: iptables (<< 1.4.2-2)
-Breaks: linux-libc-dev (<< 3.5)
+Conflicts: iptables-dev
+Breaks: linux-libc-dev (<< 3.5), iptables-dev
 Section: libdevel
 Description: netfilter xtables library
  The user-space interface to the Netfilter xtables kernel framework.
@@ -66,8 +66,8 @@ Architecture: linux-any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Replaces: iptables (<< 1.4.16.3-3)
-Breaks: iptables (<< 1.4.16.3-3)
+Replaces: iptables (<< 1.6.0-2)
+Breaks: iptables (<< 1.6.0-2)
 Description: netfilter libipt library
  The user-space iptables C library from the Netfilter xtables framework.
  .
@@ -79,7 +79,7 @@ Architecture: linux-any
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libiptc0 (=${binary:Version}), ${misc:Depends}
-Conflicts: iptables (<< 1.4.2-2)
+Conflicts: iptables-dev
 Breaks: linux-libc-dev (<< 3.5)
 Section: libdevel
 Description: Development files for libiptc
@@ -96,8 +96,8 @@ Architecture: linux-any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Replaces: iptables (<< 1.4.16.3-3)
-Breaks: iptables (<< 1.4.16.3-3)
+Replaces: iptables (<< 1.6.0-2)
+Breaks: iptables (<< 1.6.0-2)
 Description: netfilter libi4pt library
  The user-space iptables (IPv4) C library from the Netfilter xtables framework.
  .
@@ -109,7 +109,7 @@ Architecture: linux-any
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libiptc0 (=${binary:Version}), ${misc:Depends}
-Conflicts: iptables (<< 1.4.2-2)
+Conflicts: iptables-dev
 Breaks: linux-libc-dev (<< 3.5)
 Section: libdevel
 Description: Development files for libiptc
@@ -126,8 +126,8 @@ Architecture: linux-any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Replaces: iptables (<< 1.4.16.3-3)
-Breaks: iptables (<< 1.4.16.3-3)
+Replaces: iptables (<< 1.6.0-2)
+Breaks: iptables (<< 1.6.0-2)
 Description: netfilter libipt library
  The user-space iptables (IPv6) C library from the Netfilter xtables framework.
  .
@@ -139,7 +139,7 @@ Architecture: linux-any
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libiptc0 (=${binary:Version}), ${misc:Depends}
-Conflicts: iptables (<< 1.4.2-2)
+Conflicts: iptables-dev
 Breaks: linux-libc-dev (<< 3.5)
 Section: libdevel
 Description: Development files for libiptc

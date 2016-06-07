@@ -1,3 +1,36 @@
+iptables (1.6.0-3) unstable; urgency=medium
+
+  * several changes in this release. To put it short: split packages into
+    libiptc, libip4tc, lipip6tc and libxtables-dev, so we no longer require
+    the old iptables-dev binary package.
+    .
+    Also, give to all binary packages Multi-Arch support.
+    .
+    Another important thing: move libs from /lib to /usr/lib
+    .
+    Now follows almost all the commits I've made:
+    .
+  * [2a142cc] libxtables11: Section is libs instead of net (Closes:
+    #812973)
+  * [637406a] iptables: make it Multi-Arch: foreign (Closes: #776041)
+  * [4486e87] iptables,iptables-nftables-compat: Suggests kmod (Closes:
+    #623865)
+  * [e687ad9] manpages: fix typo in manpages (ip6tables-resotre) (Closes:
+    #793299)
+  * [4b6ae2e] manpages: add xtables-compat.8
+  * [1777193] d/control: bump standars to 3.9.7
+  * [bf21537] d/rules: disable libipq
+  * [9658f74] debian/: finish Multi-Arch support and migrate from /lib to
+    /usr/lib
+  * [1187751] d/rules: drop override_dh_shlibdeps
+  * [246d62f] d/: package split: libiptc and libiptc-dev
+  * [56803ca] d/iptables-dev.install: don't ship ip_qeue include
+  * [a837415] d/: create libxtables-dev binary package (replacing
+    iptables-dev)
+  * [ceda689] d/control: bump replaces, breaks and conflicts
+
+ -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Tue, 07 Jun 2016 14:58:53 +0200
+
 iptables (1.6.0-2) unstable; urgency=medium
 
   * Rebuild for unstable

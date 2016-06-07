@@ -9,7 +9,7 @@ _shlibdeps := \
   -l$(CURDIR)/debian/build/extensions/.libs
 
 _configure := \
-  --enable-libipq \
+  --disable-libipq \
   --enable-devel \
   --libdir=/lib \
   --with-xtlibdir=/lib/xtables

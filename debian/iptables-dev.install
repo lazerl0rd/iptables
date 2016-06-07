@@ -1,4 +1,4 @@
 include/linux/netfilter_ipv4/ip_queue.h usr/include/linux/netfilter_ipv4/
-usr/lib/*/lib*.so
-usr/lib/*/pkgconfig
-usr/include
+usr/lib/*/libx*.so
+usr/lib/*/pkgconfig/xtables.pc
+usr/include/xtables*

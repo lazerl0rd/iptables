@@ -24,7 +24,11 @@ Vcs-Browser: https://alioth.debian.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=pkg-n
 Package: iptables
 Multi-Arch: foreign
 Architecture: linux-any
-Depends: libxtables11 (=${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: libxtables11 (=${binary:Version}),
+	libiptc0 (=${binary:Version}),
+	libip4tc0 (=${binary:Version}),
+	libip6tc0 (=${binary:Version}),
+	${misc:Depends}, ${shlibs:Depends}
 Suggests: kmod
 Description: administration tools for packet filtering and NAT
  iptables is the userspace command line program used to configure
@@ -55,6 +59,96 @@ Description: iptables development files
  packet filter rules in the Linux kernel. This package contains
  the available library (libipq, libiptc, libxtables), header,
  documentation and related files for iptables development.
+
+Package: libiptc0
+Multi-Arch: same
+Architecture: linux-any
+Section: libs
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Replaces: iptables (<< 1.4.16.3-3)
+Breaks: iptables (<< 1.4.16.3-3)
+Description: netfilter libipt library
+ The user-space iptables C library from the Netfilter xtables framework.
+ .
+ This library has been considered private for years (and still is), in the
+ sense of changing symbols and backward compatibility not guaranteed.
+
+Package: libiptc-dev
+Architecture: linux-any
+Priority: optional
+Pre-Depends: ${misc:Pre-Depends}
+Depends: libiptc0 (=${binary:Version}), ${misc:Depends}
+Conflicts: iptables (<< 1.4.2-2)
+Breaks: linux-libc-dev (<< 3.5)
+Section: libdevel
+Description: Development files for libiptc
+ The user-space iptables C library from the Netfilter xtables framework.
+ .
+ This library has been considered private for years (and still is), in the
+ sense of changing symbols and backward compatibility not guaranteed.
+ .
+ This package provides development files and static libraries.
+
+Package: libip4tc0
+Multi-Arch: same
+Architecture: linux-any
+Section: libs
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Replaces: iptables (<< 1.4.16.3-3)
+Breaks: iptables (<< 1.4.16.3-3)
+Description: netfilter libi4pt library
+ The user-space iptables (IPv4) C library from the Netfilter xtables framework.
+ .
+ This library has been considered private for years (and still is), in the
+ sense of changing symbols and backward compatibility not guaranteed.
+
+Package: libip4tc-dev
+Architecture: linux-any
+Priority: optional
+Pre-Depends: ${misc:Pre-Depends}
+Depends: libiptc0 (=${binary:Version}), ${misc:Depends}
+Conflicts: iptables (<< 1.4.2-2)
+Breaks: linux-libc-dev (<< 3.5)
+Section: libdevel
+Description: Development files for libiptc
+ The user-space iptables (IPv4) C library from the Netfilter xtables framework.
+ .
+ This library has been considered private for years (and still is), in the
+ sense of changing symbols and backward compatibility not guaranteed.
+ .
+ This package provides development files and static libraries.
+
+Package: libip6tc0
+Multi-Arch: same
+Architecture: linux-any
+Section: libs
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Replaces: iptables (<< 1.4.16.3-3)
+Breaks: iptables (<< 1.4.16.3-3)
+Description: netfilter libipt library
+ The user-space iptables (IPv6) C library from the Netfilter xtables framework.
+ .
+ This library has been considered private for years (and still is), in the
+ sense of changing symbols and backward compatibility not guaranteed.
+
+Package: libip6tc-dev
+Architecture: linux-any
+Priority: optional
+Pre-Depends: ${misc:Pre-Depends}
+Depends: libiptc0 (=${binary:Version}), ${misc:Depends}
+Conflicts: iptables (<< 1.4.2-2)
+Breaks: linux-libc-dev (<< 3.5)
+Section: libdevel
+Description: Development files for libiptc
+ The user-space iptables (IPv6) C library from the Netfilter xtables framework.
+ .
+ This library has been considered private for years (and still is), in the
+ sense of changing symbols and backward compatibility not guaranteed.
+ .
+ This package provides development files and static libraries.
 
 Package: iptables-nftables-compat
 Architecture: linux-any

@@ -1,0 +1,5 @@
+usr/lib/*/libiptc.so
+usr/lib/*/pkgconfig/libiptc.pc
+usr/include/libiptc/libxtc.h
+usr/include/libiptc/xtcshared.h
+usr/include/libiptc/ipt_kernel_headers.h

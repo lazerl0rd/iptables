@@ -47,18 +47,18 @@ Breaks: iptables (<< 1.4.16.3-3)
 Description: netfilter xtables library
  The user-space interface to the Netfilter xtables kernel framework.
 
-Package: iptables-dev
+Package: libxtables-dev
 Architecture: linux-any
 Priority: optional
-Depends: iptables (=${binary:Version}), ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Depends: libxtables11 (=${binary:Version}), ${misc:Depends}
 Conflicts: iptables (<< 1.4.2-2)
 Breaks: linux-libc-dev (<< 3.5)
-Section: devel
-Description: iptables development files
- iptables is used to setup, maintain, and inspect the tables of
- packet filter rules in the Linux kernel. This package contains
- the available library (libipq, libiptc, libxtables), header,
- documentation and related files for iptables development.
+Section: libdevel
+Description: netfilter xtables library
+ The user-space interface to the Netfilter xtables kernel framework.
+ .
+ This package includes the development files of libxtables.
 
 Package: libiptc0
 Multi-Arch: same

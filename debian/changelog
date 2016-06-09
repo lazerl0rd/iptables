@@ -8,8 +8,9 @@ iptables (1.6.0-3) unstable; urgency=medium
     .
     Another important thing: move libs from /lib to /usr/lib
     .
-    Now follows almost all the commits I've made:
+    Now follows almost all the commits:
     .
+  [ Arturo Borrero Gonzalez ]
   * [2a142cc] libxtables11: Section is libs instead of net (Closes:
     #812973)
   * [637406a] iptables: make it Multi-Arch: foreign (Closes: #776041)
@@ -28,6 +29,9 @@ iptables (1.6.0-3) unstable; urgency=medium
   * [a837415] d/: create libxtables-dev binary package (replacing
     iptables-dev)
   * [ceda689] d/control: bump replaces, breaks and conflicts
+
+  [ Michael Biebl ]
+  * [47e0872] d/: complete libiptc packages split
 
  -- Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>  Tue, 07 Jun 2016 14:58:53 +0200
 

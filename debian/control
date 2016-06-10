@@ -38,6 +38,21 @@ Description: administration tools for packet filtering and NAT
  iptables package also includes ip6tables. ip6tables is used for
  configuring the IPv6 packet filter
 
+Package: iptables-dev
+Depends: libxtables-dev (>= ${source:Version}),
+	 libiptc0 (>= ${source:Version}),
+	 libiptc-dev (>= ${source:Version}),
+	 libip4tc0 (>= ${source:Version}),
+	 libip4tc-dev (>= ${source:Version}),
+	 libip6tc0 (>= ${source:Version}),
+	 libip6tc-dev (>= ${source:Version}),
+	 ${misc:Depends}
+Architecture: all
+Priority: extra
+Section: oldlibs
+Description: transitional dummy package
+ This is a transitional dummy package. It can safely be removed.
+
 Package: libxtables11
 Architecture: linux-any
 Section: libs

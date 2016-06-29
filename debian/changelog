@@ -29,6 +29,7 @@ iptables (1.6.0-3) unstable; urgency=medium
   * [a837415] d/: create libxtables-dev binary package (replacing
     iptables-dev)
   * [ceda689] d/control: bump replaces, breaks and conflicts
+  * [2436692]d/control: create iptables-dev as a transitional dummy package
 
   [ Michael Biebl ]
   * [47e0872] d/: complete libiptc packages split

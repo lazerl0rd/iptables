@@ -34,6 +34,7 @@ iptables (1.6.0-3) unstable; urgency=medium
   * [35d0fa9] d/control: libxtables11 is also of Multi-Arch: same
   * [d17226d] d/control: library binary packages are of priority optional
   * [80ee5d2] d/control: iptables-dev doesn't require to Depends on lib packages
+  * [2200348] d/: wrap-and-sort
 
   [ Michael Biebl ]
   * [47e0872] d/: complete libiptc packages split

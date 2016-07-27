@@ -24,11 +24,12 @@ Vcs-Browser: https://alioth.debian.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=pkg-n
 Package: iptables
 Multi-Arch: foreign
 Architecture: linux-any
-Depends: libxtables11 (=${binary:Version}),
-	libiptc0 (=${binary:Version}),
-	libip4tc0 (=${binary:Version}),
-	libip6tc0 (=${binary:Version}),
-	${misc:Depends}, ${shlibs:Depends}
+Depends: libip4tc0 (=${binary:Version}),
+         libip6tc0 (=${binary:Version}),
+         libiptc0 (=${binary:Version}),
+         libxtables11 (=${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
 Suggests: kmod
 Description: administration tools for packet filtering and NAT
  iptables is the userspace command line program used to configure
@@ -39,11 +40,11 @@ Description: administration tools for packet filtering and NAT
  configuring the IPv6 packet filter
 
 Package: iptables-dev
-Depends: libxtables-dev (>= ${source:Version}),
-	 libiptc-dev (>= ${source:Version}),
-	 libip4tc-dev (>= ${source:Version}),
-	 libip6tc-dev (>= ${source:Version}),
-	 ${misc:Depends}
+Depends: libip4tc-dev (>= ${source:Version}),
+         libip6tc-dev (>= ${source:Version}),
+         libiptc-dev (>= ${source:Version}),
+         libxtables-dev (>= ${source:Version}),
+         ${misc:Depends}
 Architecture: all
 Priority: extra
 Section: oldlibs
@@ -91,9 +92,9 @@ Package: libiptc-dev
 Architecture: linux-any
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
-Depends: libiptc0 (=${binary:Version}),
-         libip4tc-dev (=${binary:Version}),
+Depends: libip4tc-dev (=${binary:Version}),
          libip6tc-dev (=${binary:Version}),
+         libiptc0 (=${binary:Version}),
          ${misc:Depends}
 Replaces: iptables-dev (<< 1.6.0-3)
 Breaks: iptables-dev (<< 1.6.0-3)

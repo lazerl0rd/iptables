@@ -81,8 +81,6 @@ Architecture: linux-any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Replaces: iptables (<< 1.6.0-3)
-Breaks: iptables (<< 1.6.0-3)
 Description: netfilter libipt library
  The user-space iptables C library from the Netfilter xtables framework.
  .
@@ -115,8 +113,6 @@ Architecture: linux-any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Replaces: iptables (<< 1.6.0-3)
-Breaks: iptables (<< 1.6.0-3)
 Description: netfilter libi4pt library
  The user-space iptables (IPv4) C library from the Netfilter xtables framework.
  .
@@ -146,8 +142,6 @@ Architecture: linux-any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Replaces: iptables (<< 1.6.0-3)
-Breaks: iptables (<< 1.6.0-3)
 Description: netfilter libipt library
  The user-space iptables (IPv6) C library from the Netfilter xtables framework.
  .

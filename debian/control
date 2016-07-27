@@ -40,11 +40,8 @@ Description: administration tools for packet filtering and NAT
 
 Package: iptables-dev
 Depends: libxtables-dev (>= ${source:Version}),
-	 libiptc0 (>= ${source:Version}),
 	 libiptc-dev (>= ${source:Version}),
-	 libip4tc0 (>= ${source:Version}),
 	 libip4tc-dev (>= ${source:Version}),
-	 libip6tc0 (>= ${source:Version}),
 	 libip6tc-dev (>= ${source:Version}),
 	 ${misc:Depends}
 Architecture: all

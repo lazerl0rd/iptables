@@ -52,6 +52,7 @@ Description: transitional dummy package
 
 Package: libxtables11
 Architecture: linux-any
+Priority: optional
 Section: libs
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Replaces: iptables (<< 1.4.16.3-3)
@@ -73,6 +74,7 @@ Description: netfilter xtables library
  This package includes the development files of libxtables.
 
 Package: libiptc0
+Priority: optional
 Multi-Arch: same
 Architecture: linux-any
 Section: libs
@@ -106,6 +108,7 @@ Description: Development files for libiptc
  This package provides development files and static libraries.
 
 Package: libip4tc0
+Priority: optional
 Multi-Arch: same
 Architecture: linux-any
 Section: libs
@@ -136,6 +139,7 @@ Description: Development files for libiptc
  This package provides development files and static libraries.
 
 Package: libip6tc0
+Priority: optional
 Multi-Arch: same
 Architecture: linux-any
 Section: libs

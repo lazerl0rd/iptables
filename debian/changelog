@@ -1,3 +1,15 @@
+iptables (1.6.0-4) unstable; urgency=medium
+
+  * [95cf06b] d/rules: cleanup file
+  * [c9d6bef] d/control: add missing depends from -dev packages to their
+    binary match (Closes: #835664)
+  * [1879f90] d/control: fix descriptions and long descriptions of
+    libip[46]tc
+  * [d951a2c] d/control: put myself as Maintainer and use
+    'arturo@debian.org' address
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Mon, 10 Oct 2016 12:03:13 +0200
+
 iptables (1.6.0-3) unstable; urgency=medium
 
   * several changes in this release. To put it short: split packages into

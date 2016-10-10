@@ -82,8 +82,10 @@ Architecture: linux-any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: netfilter libipt library
+Description: netfilter libiptc library
  The user-space iptables C library from the Netfilter xtables framework.
+ .
+ iptables v4/v6 ruleset ADT and kernel interface.
  .
  This library has been considered private for years (and still is), in the
  sense of changing symbols and backward compatibility not guaranteed.
@@ -114,8 +116,10 @@ Architecture: linux-any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: netfilter libi4pt library
+Description: netfilter libip4tc library
  The user-space iptables (IPv4) C library from the Netfilter xtables framework.
+ .
+ iptables IPv4 ruleset ADT and kernel interface.
  .
  This library has been considered private for years (and still is), in the
  sense of changing symbols and backward compatibility not guaranteed.
@@ -130,7 +134,7 @@ Depends: libip4tc0 (=${binary:Version}),
 Replaces: iptables-dev (<< 1.6.0-3)
 Breaks: iptables-dev (<< 1.6.0-3)
 Section: libdevel
-Description: Development files for libiptc
+Description: Development files for libip4tc
  The user-space iptables (IPv4) C library from the Netfilter xtables framework.
  .
  This library has been considered private for years (and still is), in the
@@ -145,8 +149,10 @@ Architecture: linux-any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: netfilter libipt library
+Description: netfilter libip6tc library
  The user-space iptables (IPv6) C library from the Netfilter xtables framework.
+ .
+ iptables IPv6 ruleset ADT and kernel interface.
  .
  This library has been considered private for years (and still is), in the
  sense of changing symbols and backward compatibility not guaranteed.
@@ -161,7 +167,7 @@ Depends: libip6tc0 (=${binary:Version}),
 Replaces: iptables-dev (<< 1.6.0-3)
 Breaks: iptables-dev (<< 1.6.0-3)
 Section: libdevel
-Description: Development files for libiptc
+Description: Development files for libip6tc
  The user-space iptables (IPv6) C library from the Netfilter xtables framework.
  .
  This library has been considered private for years (and still is), in the

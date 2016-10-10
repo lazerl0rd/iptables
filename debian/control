@@ -124,7 +124,9 @@ Package: libip4tc-dev
 Architecture: linux-any
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
-Depends: libiptc0 (=${binary:Version}), ${misc:Depends}
+Depends: libip4tc0 (=${binary:Version}),
+         libiptc0 (=${binary:Version}),
+         ${misc:Depends}
 Replaces: iptables-dev (<< 1.6.0-3)
 Breaks: iptables-dev (<< 1.6.0-3)
 Section: libdevel
@@ -153,7 +155,9 @@ Package: libip6tc-dev
 Architecture: linux-any
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
-Depends: libiptc0 (=${binary:Version}), ${misc:Depends}
+Depends: libip6tc0 (=${binary:Version}),
+         libiptc0 (=${binary:Version}),
+         ${misc:Depends}
 Replaces: iptables-dev (<< 1.6.0-3)
 Breaks: iptables-dev (<< 1.6.0-3)
 Section: libdevel

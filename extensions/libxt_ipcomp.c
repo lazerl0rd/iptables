@@ -95,6 +95,23 @@ static void comp_save(const void *ip, const struct xt_entry_match *match)
 		printf(" --compres");
 }
 
+static int comp_xlate(struct xt_xlate *xl,
+		      const struct xt_xlate_mt_params *params)
+{
+	const struct xt_ipcomp *compinfo =
+		(struct xt_ipcomp *)params->match->data;
+
+	xt_xlate_add(xl, "comp cpi %s",
+		     compinfo->invflags & XT_IPCOMP_INV_SPI ? "!= " : "");
+	if (compinfo->spis[0] != compinfo->spis[1])
+		xt_xlate_add(xl, "%u-%u", compinfo->spis[0],
+			     compinfo->spis[1]);
+	else
+		xt_xlate_add(xl, "%u", compinfo->spis[0]);
+
+	return 1;
+}
+
 static struct xtables_match comp_mt_reg = {
 	.name          = "ipcomp",
 	.version       = XTABLES_VERSION,
@@ -106,6 +123,7 @@ static struct xtables_match comp_mt_reg = {
 	.save          = comp_save,
 	.x6_parse      = comp_parse,
 	.x6_options    = comp_opts,
+	.xlate         = comp_xlate,
 };
 
 void

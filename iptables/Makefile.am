@@ -4,6 +4,8 @@ AM_CFLAGS        = ${regular_CFLAGS}
 AM_CPPFLAGS      = ${regular_CPPFLAGS} -I${top_builddir}/include -I${top_srcdir}/include ${kinclude_CPPFLAGS} ${libmnl_CFLAGS} ${libnftnl_CFLAGS} ${libnetfilter_conntrack_CFLAGS}
 AM_YFLAGS = -d
 
+BUILT_SOURCES =
+
 xtables_multi_SOURCES  = xtables-multi.c iptables-xml.c
 xtables_multi_CFLAGS   = ${AM_CFLAGS}
 xtables_multi_LDADD    = ../extensions/libext.a
@@ -27,6 +29,7 @@ xtables_multi_LDADD   += ../libxtables/libxtables.la -lm
 
 # nftables compatibility layer
 if ENABLE_NFTABLES
+BUILT_SOURCES += xtables-config-parser.h
 xtables_compat_multi_SOURCES  = xtables-compat-multi.c iptables-xml.c
 xtables_compat_multi_CFLAGS   = ${AM_CFLAGS}
 xtables_compat_multi_LDADD    = ../extensions/libext.a ../extensions/libext_ebt.a
@@ -40,7 +43,8 @@ xtables_compat_multi_SOURCES += xtables-save.c xtables-restore.c \
 				nft-shared.c nft-ipv4.c nft-ipv6.c nft-arp.c \
 				xtables-arp-standalone.c xtables-arp.c \
 				getethertype.c nft-bridge.c \
-				xtables-eb-standalone.c xtables-eb.c
+				xtables-eb-standalone.c xtables-eb.c \
+				xtables-translate.c
 xtables_compat_multi_LDADD   += ${libmnl_LIBS} ${libnftnl_LIBS} ${libnetfilter_conntrack_LIBS} ../extensions/libext4.a ../extensions/libext6.a ../extensions/libext_ebt.a ../extensions/libext_arpt.a
 # yacc and lex generate dirty code
 xtables_compat_multi-xtables-config-parser.o xtables_compat_multi-xtables-config-syntax.o: AM_CFLAGS += -Wno-missing-prototypes -Wno-missing-declarations -Wno-implicit-function-declaration -Wno-nested-externs -Wno-undef -Wno-redundant-decls
@@ -68,6 +72,8 @@ endif
 if ENABLE_NFTABLES
 x_sbin_links  = iptables-compat iptables-compat-restore iptables-compat-save \
 		ip6tables-compat ip6tables-compat-restore ip6tables-compat-save \
+		iptables-translate ip6tables-translate \
+		iptables-restore-translate ip6tables-restore-translate \
 		arptables-compat ebtables-compat
 endif
 

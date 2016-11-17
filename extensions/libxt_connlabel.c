@@ -34,13 +34,23 @@ static const struct xt_option_entry connlabel_mt_opts[] = {
  */
 static void connlabel_open(void)
 {
+	const char *fname;
+
 	if (map)
 		return;
 
 	map = nfct_labelmap_new(NULL);
-	if (!map && errno)
-		xtables_error(RESOURCE_PROBLEM, "cannot open connlabel.conf: %s\n",
-			strerror(errno));
+	if (map != NULL)
+		return;
+
+	fname = nfct_labels_get_path();
+	if (errno) {
+		xtables_error(RESOURCE_PROBLEM,
+			"cannot open %s: %s", fname, strerror(errno));
+	} else {
+		xtables_error(RESOURCE_PROBLEM,
+			"cannot parse %s: no labels found", fname);
+	}
 }
 
 static void connlabel_mt_parse(struct xt_option_call *cb)
@@ -118,6 +128,27 @@ connlabel_mt_save(const void *ip, const struct xt_entry_match *match)
 	connlabel_mt_print_op(info, "--");
 }
 
+static int connlabel_mt_xlate(struct xt_xlate *xl,
+			      const struct xt_xlate_mt_params *params)
+{
+	const struct xt_connlabel_mtinfo *info =
+		(const void *)params->match->data;
+	const char *name = connlabel_get_name(info->bit);
+
+	if (name == NULL)
+		return 0;
+
+	if (info->options & XT_CONNLABEL_OP_SET)
+		xt_xlate_add(xl, "ct label set %s ", name);
+
+	xt_xlate_add(xl, "ct label ");
+	if (info->options & XT_CONNLABEL_OP_INVERT)
+		xt_xlate_add(xl, "and %s != ", name);
+	xt_xlate_add(xl, "%s", name);
+
+	return 1;
+}
+
 static struct xtables_match connlabel_mt_reg = {
 	.family        = NFPROTO_UNSPEC,
 	.name          = "connlabel",
@@ -129,6 +160,7 @@ static struct xtables_match connlabel_mt_reg = {
 	.save          = connlabel_mt_save,
 	.x6_parse      = connlabel_mt_parse,
 	.x6_options    = connlabel_mt_opts,
+	.xlate	       = connlabel_mt_xlate,
 };
 
 void _init(void)

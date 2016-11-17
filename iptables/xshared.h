@@ -63,6 +63,7 @@ struct iptables_command_state {
 	int proto_used;
 	const char *jumpto;
 	char **argv;
+	bool restore;
 };
 
 typedef int (*mainfunc_t)(int, char **);
@@ -85,7 +86,9 @@ extern struct xtables_match *load_proto(struct iptables_command_state *);
 extern int subcmd_main(int, char **, const struct subcommand *);
 extern void xs_init_target(struct xtables_target *);
 extern void xs_init_match(struct xtables_match *);
-extern bool xtables_lock(int wait);
+bool xtables_lock(int wait, struct timeval *wait_interval);
+
+void parse_wait_interval(const char *str, struct timeval *wait_interval);
 
 extern const struct xtables_afinfo *afinfo;
 

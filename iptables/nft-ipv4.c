@@ -1,5 +1,5 @@
 /*
- * (C) 2012-2013 by Pablo Neira Ayuso <pablo@netfilter.org>
+ * (C) 2012-2014 by Pablo Neira Ayuso <pablo@netfilter.org>
  * (C) 2013 by Tomasz Bursztyka <tomasz.bursztyka@linux.intel.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netinet/ip.h>
+#include <netdb.h>
 
 #include <xtables.h>
 
@@ -30,6 +31,7 @@ static int nft_ipv4_add(struct nftnl_rule *r, void *data)
 	struct iptables_command_state *cs = data;
 	struct xtables_rule_match *matchp;
 	uint32_t op;
+	int ret;
 
 	if (cs->fw.ip.iniface[0] != '\0') {
 		op = nft_invflags2cmp(cs->fw.ip.invflags, IPT_INV_VIA_IN);
@@ -73,8 +75,16 @@ static int nft_ipv4_add(struct nftnl_rule *r, void *data)
 	add_compat(r, cs->fw.ip.proto, cs->fw.ip.invflags);
 
 	for (matchp = cs->matches; matchp; matchp = matchp->next) {
-		if (add_match(r, matchp->match->m) < 0)
-			break;
+		/* Use nft built-in comments support instead of comment match */
+		if (strcmp(matchp->match->name, "comment") == 0) {
+			ret = add_comment(r, (char *)matchp->match->m->data);
+			if (ret < 0)
+				return ret;
+		} else {
+			ret = add_match(r, matchp->match->m);
+			if (ret < 0)
+				return ret;
+		}
 	}
 
 	/* Counters need to me added before the target, otherwise they are
@@ -428,6 +438,65 @@ static void nft_ipv4_save_counters(const void *data)
 	save_counters(cs->counters.pcnt, cs->counters.bcnt);
 }
 
+static int nft_ipv4_xlate(const void *data, struct xt_xlate *xl)
+{
+	const struct iptables_command_state *cs = data;
+	const char *comment;
+	int ret;
+
+	xlate_ifname(xl, "iifname", cs->fw.ip.iniface,
+		     cs->fw.ip.invflags & IPT_INV_VIA_IN);
+	xlate_ifname(xl, "oifname", cs->fw.ip.outiface,
+		     cs->fw.ip.invflags & IPT_INV_VIA_OUT);
+
+	if (cs->fw.ip.flags & IPT_F_FRAG) {
+		xt_xlate_add(xl, "ip frag-off %s%x ",
+			   cs->fw.ip.invflags & IPT_INV_FRAG? "" : "!= ", 0);
+	}
+
+	if (cs->fw.ip.proto != 0) {
+		const struct protoent *pent =
+			getprotobynumber(cs->fw.ip.proto);
+		char protonum[strlen("255") + 1];
+
+		if (!xlate_find_match(cs, pent->p_name)) {
+			snprintf(protonum, sizeof(protonum), "%u",
+				 cs->fw.ip.proto);
+			protonum[sizeof(protonum) - 1] = '\0';
+			xt_xlate_add(xl, "ip protocol %s%s ",
+				   cs->fw.ip.invflags & IPT_INV_PROTO ?
+					"!= " : "",
+				   pent ? pent->p_name : protonum);
+		}
+	}
+
+	if (cs->fw.ip.src.s_addr != 0) {
+		xt_xlate_add(xl, "ip saddr %s%s ",
+			   cs->fw.ip.invflags & IPT_INV_SRCIP ? "!= " : "",
+			   inet_ntoa(cs->fw.ip.src));
+	}
+	if (cs->fw.ip.dst.s_addr != 0) {
+		xt_xlate_add(xl, "ip daddr %s%s ",
+			   cs->fw.ip.invflags & IPT_INV_DSTIP ? "!= " : "",
+			   inet_ntoa(cs->fw.ip.dst));
+	}
+
+	ret = xlate_matches(cs, xl);
+	if (!ret)
+		return ret;
+
+	/* Always add counters per rule, as in iptables */
+	xt_xlate_add(xl, "counter ");
+
+	comment = xt_xlate_get_comment(xl);
+	if (comment)
+		xt_xlate_add(xl, "comment %s", comment);
+
+	ret = xlate_action(cs, !!(cs->fw.ip.flags & IPT_F_GOTO), xl);
+
+	return ret;
+}
+
 struct nft_family_ops nft_family_ops_ipv4 = {
 	.add			= nft_ipv4_add,
 	.is_same		= nft_ipv4_is_same,
@@ -442,4 +511,5 @@ struct nft_family_ops nft_family_ops_ipv4 = {
 	.post_parse		= nft_ipv4_post_parse,
 	.parse_target		= nft_ipv4_parse_target,
 	.rule_find		= nft_ipv4_rule_find,
+	.xlate			= nft_ipv4_xlate,
 };

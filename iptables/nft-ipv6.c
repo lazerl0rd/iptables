@@ -1,5 +1,5 @@
 /*
- * (C) 2012-2013 by Pablo Neira Ayuso <pablo@netfilter.org>
+ * (C) 2012-2014 by Pablo Neira Ayuso <pablo@netfilter.org>
  * (C) 2013 by Tomasz Bursztyka <tomasz.bursztyka@linux.intel.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/ip6.h>
+#include <netdb.h>
 
 #include <xtables.h>
 
@@ -29,6 +30,7 @@ static int nft_ipv6_add(struct nftnl_rule *r, void *data)
 	struct iptables_command_state *cs = data;
 	struct xtables_rule_match *matchp;
 	uint32_t op;
+	int ret;
 
 	if (cs->fw6.ipv6.iniface[0] != '\0') {
 		op = nft_invflags2cmp(cs->fw6.ipv6.invflags, IPT_INV_VIA_IN);
@@ -61,8 +63,16 @@ static int nft_ipv6_add(struct nftnl_rule *r, void *data)
 	add_compat(r, cs->fw6.ipv6.proto, cs->fw6.ipv6.invflags);
 
 	for (matchp = cs->matches; matchp; matchp = matchp->next) {
-		if (add_match(r, matchp->match->m) < 0)
-			break;
+		/* Use nft built-in comments support instead of comment match */
+		if (strcmp(matchp->match->name, "comment") == 0) {
+			ret = add_comment(r, (char *)matchp->match->m->data);
+			if (ret < 0)
+				return ret;
+		} else {
+			ret = add_match(r, matchp->match->m);
+			if (ret < 0)
+				return ret;
+		}
 	}
 
 	/* Counters need to me added before the target, otherwise they are
@@ -134,7 +144,7 @@ static void nft_ipv6_parse_payload(struct nft_xt_ctx *ctx,
 		}
 
 		if (inv)
-			cs->fw6.ipv6.invflags |= IPT_INV_SRCIP;
+			cs->fw6.ipv6.invflags |= IP6T_INV_SRCIP;
 		break;
 	case offsetof(struct ip6_hdr, ip6_dst):
 		get_cmp_data(e, &addr, sizeof(addr), &inv);
@@ -147,14 +157,14 @@ static void nft_ipv6_parse_payload(struct nft_xt_ctx *ctx,
 		}
 
 		if (inv)
-			cs->fw6.ipv6.invflags |= IPT_INV_DSTIP;
+			cs->fw6.ipv6.invflags |= IP6T_INV_DSTIP;
 		break;
 	case offsetof(struct ip6_hdr, ip6_nxt):
 		get_cmp_data(e, &proto, sizeof(proto), &inv);
 		cs->fw6.ipv6.flags |= IP6T_F_PROTO;
 		cs->fw6.ipv6.proto = proto;
 		if (inv)
-			cs->fw6.ipv6.invflags |= IPT_INV_PROTO;
+			cs->fw6.ipv6.invflags |= IP6T_INV_PROTO;
 	default:
 		DEBUGP("unknown payload offset %d\n", ctx->payload.offset);
 		break;
@@ -185,7 +195,7 @@ static void print_ipv6_addr(const struct iptables_command_state *cs,
 {
 	char buf[BUFSIZ];
 
-	fputc(cs->fw6.ipv6.invflags & IPT_INV_SRCIP ? '!' : ' ', stdout);
+	fputc(cs->fw6.ipv6.invflags & IP6T_INV_SRCIP ? '!' : ' ', stdout);
 	if (IN6_IS_ADDR_UNSPECIFIED(&cs->fw6.ipv6.src)
 	    && !(format & FMT_NUMERIC))
 		printf(FMT("%-19s ","%s "), "anywhere");
@@ -201,7 +211,7 @@ static void print_ipv6_addr(const struct iptables_command_state *cs,
 	}
 
 
-	fputc(cs->fw6.ipv6.invflags & IPT_INV_DSTIP ? '!' : ' ', stdout);
+	fputc(cs->fw6.ipv6.invflags & IP6T_INV_DSTIP ? '!' : ' ', stdout);
 	if (IN6_IS_ADDR_UNSPECIFIED(&cs->fw6.ipv6.dst)
 	    && !(format & FMT_NUMERIC))
 		printf(FMT("%-19s ","-> %s"), "anywhere");
@@ -265,9 +275,9 @@ static void nft_ipv6_save_firewall(const void *data, unsigned int format)
 			      cs->fw6.ipv6.outiface_mask);
 
 	save_ipv6_addr('s', &cs->fw6.ipv6.src,
-		       cs->fw6.ipv6.invflags & IPT_INV_SRCIP);
+		       cs->fw6.ipv6.invflags & IP6T_INV_SRCIP);
 	save_ipv6_addr('d', &cs->fw6.ipv6.dst,
-		       cs->fw6.ipv6.invflags & IPT_INV_DSTIP);
+		       cs->fw6.ipv6.invflags & IP6T_INV_DSTIP);
 
 	save_matches_and_target(cs->matches, cs->target,
 				cs->jumpto, cs->fw6.ipv6.flags, &cs->fw6);
@@ -376,6 +386,66 @@ static void nft_ipv6_save_counters(const void *data)
 	save_counters(cs->counters.pcnt, cs->counters.bcnt);
 }
 
+static void xlate_ipv6_addr(const char *selector, const struct in6_addr *addr,
+			    int invert, struct xt_xlate *xl)
+{
+	char addr_str[INET6_ADDRSTRLEN];
+
+	if (!invert && IN6_IS_ADDR_UNSPECIFIED(addr))
+		return;
+
+	inet_ntop(AF_INET6, addr, addr_str, INET6_ADDRSTRLEN);
+	xt_xlate_add(xl, "%s %s%s ", selector, invert ? "!= " : "", addr_str);
+}
+
+static int nft_ipv6_xlate(const void *data, struct xt_xlate *xl)
+{
+	const struct iptables_command_state *cs = data;
+	const char *comment;
+	int ret;
+
+	xlate_ifname(xl, "iifname", cs->fw6.ipv6.iniface,
+		     cs->fw6.ipv6.invflags & IP6T_INV_VIA_IN);
+	xlate_ifname(xl, "oifname", cs->fw6.ipv6.outiface,
+		     cs->fw6.ipv6.invflags & IP6T_INV_VIA_OUT);
+
+	if (cs->fw6.ipv6.proto != 0) {
+		const struct protoent *pent =
+			getprotobynumber(cs->fw6.ipv6.proto);
+		char protonum[strlen("255") + 1];
+
+		if (!xlate_find_match(cs, pent->p_name)) {
+			snprintf(protonum, sizeof(protonum), "%u",
+				 cs->fw6.ipv6.proto);
+			protonum[sizeof(protonum) - 1] = '\0';
+			xt_xlate_add(xl, "meta l4proto %s%s ",
+				   cs->fw6.ipv6.invflags & IP6T_INV_PROTO ?
+					"!= " : "",
+				   pent ? pent->p_name : protonum);
+		}
+	}
+
+	xlate_ipv6_addr("ip6 saddr", &cs->fw6.ipv6.src,
+			cs->fw6.ipv6.invflags & IP6T_INV_SRCIP, xl);
+	xlate_ipv6_addr("ip6 daddr", &cs->fw6.ipv6.dst,
+			cs->fw6.ipv6.invflags & IP6T_INV_DSTIP, xl);
+
+	ret = xlate_matches(cs, xl);
+	if (!ret)
+		return ret;
+
+	/* Always add counters per rule, as in iptables */
+	xt_xlate_add(xl, "counter ");
+
+	comment = xt_xlate_get_comment(xl);
+	if (comment)
+		xt_xlate_add(xl, "comment %s", comment);
+
+	ret = xlate_action(cs, !!(cs->fw6.ipv6.flags & IP6T_F_GOTO), xl);
+
+	return ret;
+}
+
 struct nft_family_ops nft_family_ops_ipv6 = {
 	.add			= nft_ipv6_add,
 	.is_same		= nft_ipv6_is_same,
@@ -390,4 +460,5 @@ struct nft_family_ops nft_family_ops_ipv6 = {
 	.post_parse		= nft_ipv6_post_parse,
 	.parse_target		= nft_ipv6_parse_target,
 	.rule_find		= nft_ipv6_rule_find,
+	.xlate			= nft_ipv6_xlate,
 };

@@ -103,8 +103,9 @@ the built-in chains \fBINPUT\fP (for packets destined to local sockets),
 .TP
 \fBnat\fP:
 This table is consulted when a packet that creates a new
-connection is encountered.  It consists of three built-ins: \fBPREROUTING\fP
-(for altering packets as soon as they come in), \fBOUTPUT\fP
+connection is encountered.  It consists of four built-ins: \fBPREROUTING\fP
+(for altering packets as soon as they come in), \fBINPUT\fP (for altering
+packets destined for local sockets), \fBOUTPUT\fP
 (for altering locally-generated packets before routing), and \fBPOSTROUTING\fP
 (for altering packets as they are about to go out).
 IPv6 NAT support is available since kernel 3.7.
@@ -194,6 +195,8 @@ arguments given. The exact rules are suppressed until you use
 .nf
  iptables \-L \-v
 .fi
+or
+\fBiptables\-save\fP(8).
 .TP
 \fB\-S\fP, \fB\-\-list\-rules\fP [\fIchain\fP]
 Print all rules in the selected chain.  If no chain is selected, all
@@ -366,6 +369,13 @@ an attempt will be made to obtain an exclusive lock at launch.  By default,
 the program will exit if the lock cannot be obtained.  This option will
 make the program wait (indefinitely or for optional \fIseconds\fP) until
 the exclusive lock can be obtained.
+.TP
+\fB\-W\fP, \fB\-\-wait-interval\fP \fImicroseconds\fP
+Interval to wait per each iteration.
+When running latency sensitive applications, waiting for the xtables lock
+for extended durations may not be acceptable. This option will make each
+iteration take the amount of time specified. The default interval is
+1 second. This option only works with \fB\-w\fP.
 .TP
 \fB\-n\fP, \fB\-\-numeric\fP
 Numeric output.

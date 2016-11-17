@@ -1,3 +1,11 @@
+iptables (1.6.0+snapshot20161117-1) unstable; urgency=medium
+
+  * [7b09508] New upstream version 1.6.0+snapshot20161117
+  * [0da7ef3] d/control: update std-version to 3.9.8
+  * [ea670cc] iptables-nftables-compat: include translate tools
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Thu, 17 Nov 2016 11:46:41 +0100
+
 iptables (1.6.0-4) unstable; urgency=medium
 
   * [95cf06b] d/rules: cleanup file

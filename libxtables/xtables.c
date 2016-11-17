@@ -1353,22 +1353,36 @@ static struct in_addr *network_to_ipaddr(const char *name)
 
 static struct in_addr *host_to_ipaddr(const char *name, unsigned int *naddr)
 {
-	struct hostent *host;
 	struct in_addr *addr;
+	struct addrinfo hints;
+	struct addrinfo *res, *p;
+	int err;
 	unsigned int i;
 
-	*naddr = 0;
-	if ((host = gethostbyname(name)) != NULL) {
-		if (host->h_addrtype != AF_INET ||
-		    host->h_length != sizeof(struct in_addr))
-			return NULL;
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_flags    = AI_CANONNAME;
+	hints.ai_family   = AF_INET;
+	hints.ai_socktype = SOCK_RAW;
 
-		while (host->h_addr_list[*naddr] != NULL)
+	*naddr = 0;
+	if ((err = getaddrinfo(name, NULL, &hints, &res)) != 0) {
+#ifdef DEBUG
+		fprintf(stderr,"Name2IP: %s\n",gai_strerror(err));
+#endif
+		return NULL;
+	} else {
+		for (p = res; p != NULL; p = p->ai_next)
 			++*naddr;
+#ifdef DEBUG
+		fprintf(stderr, "resolved: len=%d  %s ", res->ai_addrlen,
+		        xtables_ipaddr_to_numeric(&((struct sockaddr_in *)res->ai_addr)->sin_addr));
+#endif
 		addr = xtables_calloc(*naddr, sizeof(struct in_addr));
-		for (i = 0; i < *naddr; i++)
-			memcpy(&addr[i], host->h_addr_list[i],
+		for (i = 0, p = res; p != NULL; p = p->ai_next)
+			memcpy(&addr[i++],
+			       &((const struct sockaddr_in *)p->ai_addr)->sin_addr,
 			       sizeof(struct in_addr));
+		freeaddrinfo(res);
 		return addr;
 	}
 
@@ -1985,4 +1999,73 @@ void get_kernel_version(void)
 
 	sscanf(uts.release, "%d.%d.%d", &x, &y, &z);
 	kernel_version = LINUX_VERSION(x, y, z);
+}
+
+#include <linux/netfilter/nf_tables.h>
+
+struct xt_xlate {
+	struct {
+		char	*data;
+		int	size;
+		int	rem;
+		int	off;
+	} buf;
+	char comment[NFT_USERDATA_MAXLEN];
+};
+
+struct xt_xlate *xt_xlate_alloc(int size)
+{
+	struct xt_xlate *xl;
+
+	xl = malloc(sizeof(struct xt_xlate));
+	if (xl == NULL)
+		xtables_error(RESOURCE_PROBLEM, "OOM");
+
+	xl->buf.data = malloc(size);
+	if (xl->buf.data == NULL)
+		xtables_error(RESOURCE_PROBLEM, "OOM");
+
+	xl->buf.size = size;
+	xl->buf.rem = size;
+	xl->buf.off = 0;
+	xl->comment[0] = '\0';
+
+	return xl;
+}
+
+void xt_xlate_free(struct xt_xlate *xl)
+{
+	free(xl->buf.data);
+	free(xl);
+}
+
+void xt_xlate_add(struct xt_xlate *xl, const char *fmt, ...)
+{
+	va_list ap;
+	int len;
+
+	va_start(ap, fmt);
+	len = vsnprintf(xl->buf.data + xl->buf.off, xl->buf.rem, fmt, ap);
+	if (len < 0 || len >= xl->buf.rem)
+		xtables_error(RESOURCE_PROBLEM, "OOM");
+
+	va_end(ap);
+	xl->buf.rem -= len;
+	xl->buf.off += len;
+}
+
+void xt_xlate_add_comment(struct xt_xlate *xl, const char *comment)
+{
+	strncpy(xl->comment, comment, NFT_USERDATA_MAXLEN - 1);
+	xl->comment[NFT_USERDATA_MAXLEN - 1] = '\0';
+}
+
+const char *xt_xlate_get_comment(struct xt_xlate *xl)
+{
+	return xl->comment[0] ? xl->comment : NULL;
+}
+
+const char *xt_xlate_get(struct xt_xlate *xl)
+{
+	return xl->buf.data;
 }

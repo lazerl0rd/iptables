@@ -1,3 +1,10 @@
+iptables (1.6.0+snapshot20161117-2) unstable; urgency=medium
+
+  * [146c602] libxtables: bump from libxtables11 to libxtables12 (Closes:
+    #844755)
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Mon, 21 Nov 2016 09:25:51 +0100
+
 iptables (1.6.0+snapshot20161117-1) unstable; urgency=medium
 
   * [7b09508] New upstream version 1.6.0+snapshot20161117

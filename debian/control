@@ -26,7 +26,7 @@ Architecture: linux-any
 Depends: libip4tc0 (=${binary:Version}),
          libip6tc0 (=${binary:Version}),
          libiptc0 (=${binary:Version}),
-         libxtables11 (=${binary:Version}),
+         libxtables12 (=${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
 Suggests: kmod
@@ -50,7 +50,7 @@ Section: oldlibs
 Description: transitional dummy package
  This is a transitional dummy package. It can safely be removed.
 
-Package: libxtables11
+Package: libxtables12
 Multi-Arch: same
 Architecture: linux-any
 Priority: optional
@@ -65,7 +65,7 @@ Package: libxtables-dev
 Architecture: linux-any
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
-Depends: libxtables11 (=${binary:Version}), ${misc:Depends}
+Depends: libxtables12 (=${binary:Version}), ${misc:Depends}
 Replaces: iptables-dev (<< 1.6.0-3)
 Breaks: iptables-dev (<< 1.6.0-3)
 Section: libdevel
@@ -180,7 +180,7 @@ Priority: optional
 Depends: arptables,
          ebtables,
          iptables (=${binary:Version}),
-         libxtables11 (=${binary:Version}),
+         libxtables12 (=${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: nftables

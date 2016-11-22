@@ -1,3 +1,10 @@
+iptables (1.6.0+snapshot20161117-4) unstable; urgency=medium
+
+  * [7829163] d/control: adjust breaks/replaces to libxtables11
+    (Closes: #845278)
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Tue, 22 Nov 2016 14:56:12 +0100
+
 iptables (1.6.0+snapshot20161117-3) unstable; urgency=medium
 
   * [21fdc57] libxtables12: breaks and replaces libxtables11 (Closes:

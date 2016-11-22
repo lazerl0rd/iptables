@@ -1,3 +1,10 @@
+iptables (1.6.0+snapshot20161117-3) unstable; urgency=medium
+
+  * [21fdc57] libxtables12: breaks and replaces libxtables11 (Closes:
+    #845278)
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Tue, 22 Nov 2016 09:03:38 +0100
+
 iptables (1.6.0+snapshot20161117-2) unstable; urgency=medium
 
   * [146c602] libxtables: bump from libxtables11 to libxtables12 (Closes:

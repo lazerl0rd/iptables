@@ -56,8 +56,8 @@ Architecture: linux-any
 Priority: optional
 Section: libs
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Replaces: iptables (<< 1.4.16.3-3), libxtables11 (<< 1.6.0+snapshot20161117-1)
-Breaks: iptables (<< 1.4.16.3-3), libxtables11 (<< 1.6.0+snapshot20161117-1)
+Replaces: iptables (<< 1.4.16.3-3), libxtables11 (<= 1.6.0+snapshot20161117-1)
+Breaks: iptables (<< 1.4.16.3-3), libxtables11 (<= 1.6.0+snapshot20161117-1)
 Description: netfilter xtables library
  The user-space interface to the Netfilter xtables kernel framework.
 

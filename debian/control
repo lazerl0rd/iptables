@@ -68,7 +68,7 @@ Depends: libxtables12 (=${binary:Version}), ${misc:Depends}
 Replaces: iptables-dev (<< 1.6.0-3)
 Breaks: iptables-dev (<< 1.6.0-3)
 Section: libdevel
-Description: netfilter xtables library
+Description: netfilter xtables library -- development files
  The user-space interface to the Netfilter xtables kernel framework.
  .
  This package includes the development files of libxtables.

@@ -6,7 +6,7 @@ Uploaders: Laurence J. Lane <ljlane@debian.org>
 Build-Depends: autoconf,
                automake,
                bison,
-               debhelper (>= 9),
+               debhelper (>= 10),
                dh-autoreconf,
                flex,
                libmnl-dev,

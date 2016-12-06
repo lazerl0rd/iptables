@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 export V=1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 LIB_DIR := /usr/lib/$(DEB_HOST_MULTIARCH)

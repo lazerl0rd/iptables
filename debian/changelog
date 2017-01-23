@@ -1,3 +1,27 @@
+iptables (1.6.0+snapshot20161117-5) unstable; urgency=medium
+
+  [ Samuel Henrique ]
+  * [627e82e] Bump DH level to 10
+  * [4a4cc7d] d/control: Remove dh-autoreconf explicit build dep
+  * [f40558f] d/rules: Export hardening flag to enable bindnow
+  * [a71ad93] d/clean: Create file and add build generated files
+  * [b397312] d/control: Better short description for libxtables-dev
+  * [c759933] d/iptables.lintian-overrides: Remove file, unused override
+  * [2aa3c45] d/control: Point Vcs-* fields to anonscm.debian.org/git
+
+  [ Arturo Borrero Gonzalez ]
+  * [280fdc5] d/control: update again VCS URLs
+
+  [ Simon McVittie ]
+  * [5579f5d] src:iptables: add symbols files for all libraries
+    (Closes: #845309)
+
+  [ Guillem Jover ]
+  * [8e4409f] libxtables12: fix Replaces and Breaks relationships
+    (Closes: #845800)
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Mon, 23 Jan 2017 09:13:07 +0100
+
 iptables (1.6.0+snapshot20161117-4) unstable; urgency=medium
 
   * [7829163] d/control: adjust breaks/replaces to libxtables11

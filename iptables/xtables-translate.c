@@ -352,18 +352,30 @@ static int xlate_chain_set(struct nft_handle *h, const char *table,
 			   const char *chain, const char *policy,
 			   const struct xt_counters *counters)
 {
-	printf("add chain %s %s %s ", family2str[h->family], table, chain);
-	if (strcmp(chain, "PREROUTING") == 0)
-		printf("{ type filter hook prerouting priority 0; }\n");
-	else if (strcmp(chain, "INPUT") == 0)
-		printf("{ type filter hook input priority 0; }\n");
-	else if (strcmp(chain, "FORWARD") == 0)
-		printf("{ type filter hook forward priority 0; }\n");
-	else if (strcmp(chain, "OUTPUT") == 0)
-		printf("{ type filter hook output priority 0; }\n");
-	else if (strcmp(chain, "POSTROUTING") == 0)
-		printf("{ type filter hook postrouting priority 0; }\n");
+	const char *type = "filter";
 
+	if (strcmp(table, "nat") == 0)
+		type = "nat";
+
+	printf("add chain %s %s %s { type %s ",
+	       family2str[h->family], table, chain, type);
+	if (strcmp(chain, "PREROUTING") == 0)
+		printf("hook prerouting priority 0; ");
+	else if (strcmp(chain, "INPUT") == 0)
+		printf("hook input priority 0; ");
+	else if (strcmp(chain, "FORWARD") == 0)
+		printf("hook forward priority 0; ");
+	else if (strcmp(chain, "OUTPUT") == 0)
+		printf("hook output priority 0; ");
+	else if (strcmp(chain, "POSTROUTING") == 0)
+		printf("hook postrouting priority 0; ");
+
+	if (strcmp(policy, "ACCEPT") == 0)
+		printf("policy accept; ");
+	else if (strcmp(policy, "DROP") == 0)
+		printf("policy drop; ");
+
+	printf("}\n");
 	return 1;
 }
 

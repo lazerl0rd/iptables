@@ -12,7 +12,7 @@ Signed-off-by: Laurence J. Lane <ljlane@debian.org>
 
 --- a/iptables/Makefile.am
 +++ b/iptables/Makefile.am
-@@ -54,7 +54,10 @@
+@@ -58,7 +58,10 @@
  endif
  man_MANS         = iptables.8 iptables-restore.8 iptables-save.8 \
                     iptables-xml.1 ip6tables.8 ip6tables-restore.8 \
@@ -24,7 +24,7 @@ Signed-off-by: Laurence J. Lane <ljlane@debian.org>
  CLEANFILES       = iptables.8 \
  		   xtables-config-parser.c xtables-config-syntax.c
  
-@@ -86,3 +89,4 @@
+@@ -92,3 +95,4 @@
  	for i in ${v4_sbin_links}; do ${LN_S} -f xtables-multi "${DESTDIR}${sbindir}/$$i"; done;
  	for i in ${v6_sbin_links}; do ${LN_S} -f xtables-multi "${DESTDIR}${sbindir}/$$i"; done;
  	for i in ${x_sbin_links}; do ${LN_S} -f xtables-compat-multi "${DESTDIR}${sbindir}/$$i"; done;

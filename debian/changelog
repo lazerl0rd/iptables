@@ -1,4 +1,4 @@
-iptables (1.6.1-1) unstable; urgency=medium
+iptables (1.6.1-1~exp1) experimental; urgency=medium
 
   * [475b9a9] d/: add basic autopkgtests
   * [f1f129d] New upstream version 1.6.1
@@ -6,7 +6,7 @@ iptables (1.6.1-1) unstable; urgency=medium
   * [def0a30] d/patches/: refresh 0104-lintian_hyphens.patch
   * [3abd57d] d/patches/: refresh 0301-install_iptables_apply.patch
 
- -- Arturo Borrero Gonzalez <arturo@debian.org>  Fri, 10 Feb 2017 08:54:30 +0100
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Wed, 15 Mar 2017 11:03:30 +0100
 
 iptables (1.6.0+snapshot20161117-5) unstable; urgency=medium
 

@@ -1,8 +1,8 @@
 Source: iptables
 Section: net
 Priority: important
-Maintainer: Arturo Borrero Gonzalez <arturo@debian.org>
-Uploaders: Laurence J. Lane <ljlane@debian.org>
+Maintainer: Debian Netfilter Packaging Team <pkg-netfilter-team@lists.alioth.debian.org>
+Uploaders: Arturo Borrero Gonzalez <arturo@debian.org>, Laurence J. Lane <ljlane@debian.org>
 Build-Depends: autoconf,
                automake,
                bison,

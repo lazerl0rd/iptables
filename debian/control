@@ -43,7 +43,8 @@ Depends: libip4tc-dev (>= ${source:Version}),
          libiptc-dev (>= ${source:Version}),
          libxtables-dev (>= ${source:Version}),
          ${misc:Depends}
-Architecture: all
+Architecture: any
+Multi-Arch: same
 Priority: extra
 Section: oldlibs
 Description: transitional dummy package

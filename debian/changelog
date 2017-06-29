@@ -1,3 +1,18 @@
+iptables (1.6.1-2) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * [e232f6c] d/control: turn iptables-dev Architecture: any (Closes: #865464)
+
+  [ Arturo Borrero Gonzalez ]
+  * [6f63f8c] d/control: make all the -dev packages Multi-Arch: same
+  * [d85cd65] d/control: bump std-version to 4.0.0
+  * [0ba5cff] d/patches: add
+    0001-extensions-libxt_hashlimit-fix-64-bit-printf-formats.patch.
+    Thanks to James Cowgill for the patch (Closes: #859775)
+  * [ab1785b] iptables: fix ip6tables-apply manpage symlink
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Thu, 29 Jun 2017 13:40:27 +0200
+
 iptables (1.6.1-1) unstable; urgency=medium
 
   * Move from experimental to unstable

@@ -63,6 +63,7 @@ Description: netfilter xtables library
 
 Package: libxtables-dev
 Architecture: linux-any
+Multi-Arch: same
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libxtables12 (=${binary:Version}), ${misc:Depends}
@@ -91,6 +92,7 @@ Description: netfilter libiptc library
 
 Package: libiptc-dev
 Architecture: linux-any
+Multi-Arch: same
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libip4tc-dev (=${binary:Version}),
@@ -125,6 +127,7 @@ Description: netfilter libip4tc library
 
 Package: libip4tc-dev
 Architecture: linux-any
+Multi-Arch: same
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libip4tc0 (=${binary:Version}),
@@ -158,6 +161,7 @@ Description: netfilter libip6tc library
 
 Package: libip6tc-dev
 Architecture: linux-any
+Multi-Arch: same
 Priority: optional
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libip6tc0 (=${binary:Version}),

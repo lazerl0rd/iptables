@@ -1,5 +1,5 @@
 
-AC_INIT([iptables], [1.6.1])
+AC_INIT([iptables], [1.6.2])
 
 # See libtool.info "Libtool's versioning system"
 libxtables_vcurrent=12
@@ -42,8 +42,9 @@ AC_ARG_ENABLE([ipv6],
 AC_ARG_ENABLE([largefile],
 	AS_HELP_STRING([--disable-largefile], [Do not build largefile support]),
 	[enable_largefile="$enableval"],
-	[enable_largefile="yes";
-	largefile_cppflags='-D_LARGEFILE_SOURCE=1 -D_LARGE_FILES -D_FILE_OFFSET_BITS=64'])
+	[enable_largefile="yes"])
+AS_IF([test "$enable_largefile" = "yes"], [largefile_cppflags='-D_LARGEFILE_SOURCE=1 -D_LARGE_FILES -D_FILE_OFFSET_BITS=64'])
+
 AC_ARG_ENABLE([devel],
 	AS_HELP_STRING([--enable-devel],
 	[Install Xtables development headers]),
@@ -67,6 +68,10 @@ AC_ARG_ENABLE([connlabel],
 	AS_HELP_STRING([--disable-connlabel],
 	[Do not build libnetfilter_conntrack]),
 	[enable_connlabel="$enableval"], [enable_connlabel="yes"])
+AC_ARG_WITH([xt-lock-name], AS_HELP_STRING([--with-xt-lock-name=PATH],
+	[Path to the xtables lock [[/run/xtables.lock]]]),
+	[xt_lock_name="$withval"],
+	[xt_lock_name="/run/xtables.lock"])
 
 libiptc_LDFLAGS2="";
 AX_CHECK_LINKER_FLAGS([-Wl,--no-as-needed],
@@ -232,6 +237,9 @@ AC_SUBST([libxtables_vage])
 libxtables_vmajor=$(($libxtables_vcurrent - $libxtables_vage));
 AC_SUBST([libxtables_vmajor])
 
+AC_DEFINE_UNQUOTED([XT_LOCK_NAME], "${xt_lock_name}",
+	[Location of the iptables lock file])
+
 AC_CONFIG_FILES([Makefile extensions/GNUmakefile include/Makefile
 	iptables/Makefile iptables/xtables.pc
 	iptables/iptables.8 iptables/iptables-extensions.8.tmpl
@@ -241,7 +249,8 @@ AC_CONFIG_FILES([Makefile extensions/GNUmakefile include/Makefile
 	libiptc/Makefile libiptc/libiptc.pc
 	libiptc/libip4tc.pc libiptc/libip6tc.pc
 	libxtables/Makefile utils/Makefile
-	include/xtables-version.h include/iptables/internal.h])
+	include/xtables-version.h include/iptables/internal.h
+	utils/nfnl_osf.8])
 AC_OUTPUT
 
 
@@ -265,7 +274,8 @@ Build parameters:
   Support plugins via dlopen (shared):	${enable_shared}
   Installation prefix (--prefix):	${prefix}
   Xtables extension directory:		${e_xtlibdir}
-  Pkg-config directory:			${e_pkgconfigdir}"
+  Pkg-config directory:			${e_pkgconfigdir}
+  Xtables lock file:			${xt_lock_name}"
 
 if [[ -n "$ksourcedir" ]]; then
 	echo "  Kernel source directory:		${ksourcedir}"

@@ -197,7 +197,6 @@ Description: iptables compat tools for nftables
  'iptables-compat-restore', 'ip6tables-compat', 'ip6tables-compat-save',
  'ip6tables-compat-restore', 'arptables-compat' and 'ebtables-compat'.
  .
- .
  A basic way to understand this compat stuff is to load the ruleset
  skeleton, i.e: a first call `iptables-compat -L'. Then, you can use nft,
  i.e: `nft list ruleset'. Same for the other families.

@@ -16,11 +16,11 @@ Restrictions: needs-root, isolation-container
 
 Test-Command: iptables-restore -h
 Depends: @
-Restrictions: needs-root, isolation-container
+Restrictions: needs-root, isolation-container, allow-stderr
 
 Test-Command: ip6tables-restore -h
 Depends: @
-Restrictions: needs-root, isolation-container
+Restrictions: needs-root, isolation-container, allow-stderr
 
 Test-Command: iptables-compat -h
 Depends: @
@@ -40,11 +40,11 @@ Restrictions: needs-root, isolation-container
 
 Test-Command: iptables-compat-restore -h
 Depends: @
-Restrictions: needs-root, isolation-container
+Restrictions: needs-root, isolation-container, allow-stderr
 
 Test-Command: ip6tables-compat-restore -h
 Depends: @
-Restrictions: needs-root, isolation-container
+Restrictions: needs-root, isolation-container, allow-stderr
 
 Test-Command: arptables-compat -h
 Depends: @

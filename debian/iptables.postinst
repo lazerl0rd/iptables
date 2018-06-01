@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ]; then
+	update-alternatives \
+	  --install /sbin/ìptables iptables /sbin/iptables-legacy 10 \
+	  --slave /sbin/iptables-restore iptables-restore /sbin/iptables-legacy-restore \
+	  --slave /sbin/iptables-save iptables-save /sbin/iptables-legacy-save
+	update-alternatives \
+	  --install /sbin/ip6tables ip6tables /sbin/ip6tables-legacy 10 \
+	  --slave /sbin/ip6tables-restore ip6tables-restore /sbin/ip6tables-legacy-restore \
+	  --slave /sbin/ip6tables-save ip6tables-save /sbin/ip6tables-legacy-save
+fi
+
+#DEBHELPER#
+

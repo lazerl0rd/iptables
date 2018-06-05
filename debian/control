@@ -189,6 +189,7 @@ Depends: arptables,
          ${shlibs:Depends}
 Recommends: nftables
 Suggests: kmod
+Breaks: iptables (<< 1.6.2-1)
 Description: iptables compat tools for nftables
  this package includes the compat tools to load iptables, ip6tables, arptables
  and ebtables rules to the nf_tables kernel subsystem.

@@ -1,7 +1,70 @@
-Documentation:
-==============
+nftables & iptables
+===================
 
-The various netfilter and iptables HOWTOS can be found at:
+nftables is the replacement of iptables by the Netfilter project.
+You are encouraged to migrate now to nftables.
 
-  http://www.netfilter.org/documentation/
+If you are developing a new firewall or network service, then writting a
+nftables ruleset from the beginnig should be fine.
+If you would like to migrate or translate your previous
+iptables/ip6tables/arptables/ebtables rulesets to nftables then keep reading.
 
+There are some tools in place to help you moving from iptables to nftables,
+following 2 basic approaches:
+
+ * command line translation
+   (iptables-translate, iptables-restore-translate,
+   ip6tables-translate, ip6tables-restore-translate)
+
+ * syntax reuse with nf_tables backend
+   (iptables-compat, iptables-compat-restore, iptables-compat-save,
+   ip6tables-compat, ip6tables-compat-restore, ip6tables-compat-save,
+   arptables-compat, ebtables-compat)
+
+Documentation on how to use these tools can be found at:
+
+ * https://wiki.nftables.org/wiki-nftables/index.php/Moving_from_iptables_to_nftables
+ * xtables-compat(8) manpage
+ * xtables-translate(8) manpage
+
+alternatives
+============
+
+The legacy binaries are now installed as:
+
+ * /sbin/iptables-legacy
+ * /sbin/iptables-legacy-restore
+ * /sbin/iptables-legacy-save
+ * /sbin/ip6tables-legacy
+ * /sbin/ip6tables-legacy-restore
+ * /sbin/ip6tables-legacy-save
+ * /sbin/arptables-legacy (in the arptables Debian package)
+ * /sbin/ebtables-legacy (in the ebtables Debian package)
+
+The compat tools (tools which accepts the legacy syntax but use the nf_tables
+kernel subsystem) are installed as:
+
+ * /sbin/iptables-compat
+ * /sbin/iptables-compat-restore
+ * /sbin/iptables-compat-save
+ * /sbin/ip6tables-compat
+ * /sbin/ip6tables-compat-restore
+ * /sbin/ip6tables-compat-save
+ * /sbin/arptables-compat
+ * /sbin/ebtables-compat
+
+All of them from the `iptables-nftables-compat` Debian package and have more
+default priority, which means that if you install the package, you will be
+using now the compat tools instead of the legacy ones.
+
+You can change this at runtime using the `update-alternatives` command.
+
+NOTE: make sure you don't share iptables-legacy and iptables-compat (nftables)
+rulesets in the same machine at the same time just for sanity and to avoid
+unexpected behaviours in your network.
+
+future
+======
+
+Right now Debian includes by default iptables-legacy in every system
+installation. In a mid-long term future this will change in favour of nftables.

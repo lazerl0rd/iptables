@@ -10,7 +10,8 @@ If you would like to migrate or translate your previous
 iptables/ip6tables/arptables/ebtables rulesets to nftables then keep reading.
 
 There are some tools in place to help you moving from iptables to nftables,
-following 2 basic approaches:
+(tools included in `iptables-nftables-compat` package) following 2 basic
+approaches:
 
  * command line translation
    (iptables-translate, iptables-restore-translate,
@@ -23,6 +24,7 @@ following 2 basic approaches:
 
 Documentation on how to use these tools can be found at:
 
+ * https://wiki.debian.org/Moving_from_iptables_to_nftables
  * https://wiki.nftables.org/wiki-nftables/index.php/Moving_from_iptables_to_nftables
  * xtables-compat(8) manpage
  * xtables-translate(8) manpage
@@ -54,12 +56,12 @@ kernel subsystem) are installed as:
  * /sbin/ebtables-compat
 
 All of them from the `iptables-nftables-compat` Debian package and have more
-default priority, which means that if you install the package, you will be
-using now the compat tools instead of the legacy ones.
+default priority, which means that if you install that package, you will be
+using the compat tools instead of the legacy ones.
 
 You can change this at runtime using the `update-alternatives` command.
 
-NOTE: make sure you don't share iptables-legacy and iptables-compat (nftables)
+NOTE: make sure you don't mix iptables-legacy and iptables-compat (nftables)
 rulesets in the same machine at the same time just for sanity and to avoid
 unexpected behaviours in your network.
 

@@ -102,11 +102,11 @@ host_triplet = @host@
 @ENABLE_IPV6_TRUE@am__append_6 = -DENABLE_IPV6
 @ENABLE_IPV6_TRUE@am__append_7 = ../libiptc/libip6tc.la ../extensions/libext6.a
 
-# nftables compatibility layer
+# iptables using nf_tables api
 @ENABLE_NFTABLES_TRUE@am__append_8 = xtables-config-parser.h
 @ENABLE_NFTABLES_TRUE@@ENABLE_STATIC_TRUE@am__append_9 = -DALL_INCLUSIVE
-sbin_PROGRAMS = xtables-multi$(EXEEXT) $(am__EXEEXT_1)
-@ENABLE_NFTABLES_TRUE@am__append_10 = xtables-compat-multi
+sbin_PROGRAMS = xtables-legacy-multi$(EXEEXT) $(am__EXEEXT_1)
+@ENABLE_NFTABLES_TRUE@am__append_10 = xtables-nft-multi
 subdir = iptables
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_check_linker_flags.m4 \
@@ -120,43 +120,74 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = xtables.pc iptables.8 iptables-extensions.8.tmpl \
 	iptables-save.8 iptables-restore.8 iptables-apply.8 \
-	iptables-xml.1
+	iptables-xml.1 xtables-monitor.8
 CONFIG_CLEAN_VPATH_FILES =
-@ENABLE_NFTABLES_TRUE@am__EXEEXT_1 = xtables-compat-multi$(EXEEXT)
+@ENABLE_NFTABLES_TRUE@am__EXEEXT_1 = xtables-nft-multi$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man1dir)" \
 	"$(DESTDIR)$(man8dir)" "$(DESTDIR)$(pkgconfigdir)"
 PROGRAMS = $(sbin_PROGRAMS)
-am__xtables_compat_multi_SOURCES_DIST = xtables-compat-multi.c \
+am__xtables_legacy_multi_SOURCES_DIST = xtables-legacy-multi.c \
+	iptables-xml.c iptables-save.c iptables-restore.c \
+	iptables-standalone.c iptables.c ip6tables-save.c \
+	ip6tables-restore.c ip6tables-standalone.c ip6tables.c \
+	xshared.c
+@ENABLE_IPV4_TRUE@am__objects_1 = xtables_legacy_multi-iptables-save.$(OBJEXT) \
+@ENABLE_IPV4_TRUE@	xtables_legacy_multi-iptables-restore.$(OBJEXT) \
+@ENABLE_IPV4_TRUE@	xtables_legacy_multi-iptables-standalone.$(OBJEXT) \
+@ENABLE_IPV4_TRUE@	xtables_legacy_multi-iptables.$(OBJEXT)
+@ENABLE_IPV6_TRUE@am__objects_2 = xtables_legacy_multi-ip6tables-save.$(OBJEXT) \
+@ENABLE_IPV6_TRUE@	xtables_legacy_multi-ip6tables-restore.$(OBJEXT) \
+@ENABLE_IPV6_TRUE@	xtables_legacy_multi-ip6tables-standalone.$(OBJEXT) \
+@ENABLE_IPV6_TRUE@	xtables_legacy_multi-ip6tables.$(OBJEXT)
+am_xtables_legacy_multi_OBJECTS =  \
+	xtables_legacy_multi-xtables-legacy-multi.$(OBJEXT) \
+	xtables_legacy_multi-iptables-xml.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) xtables_legacy_multi-xshared.$(OBJEXT)
+xtables_legacy_multi_OBJECTS = $(am_xtables_legacy_multi_OBJECTS)
+xtables_legacy_multi_DEPENDENCIES = ../extensions/libext.a \
+	$(am__append_4) $(am__append_7) ../libxtables/libxtables.la
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
+xtables_legacy_multi_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(xtables_legacy_multi_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am__xtables_nft_multi_SOURCES_DIST = xtables-nft-multi.c \
 	iptables-xml.c xtables-config-parser.y xtables-config-syntax.l \
 	xtables-save.c xtables-restore.c xtables-standalone.c \
 	xtables.c nft.c nft-shared.c nft-ipv4.c nft-ipv6.c nft-arp.c \
-	xtables-arp-standalone.c xtables-arp.c getethertype.c \
-	nft-bridge.c xtables-eb-standalone.c xtables-eb.c \
-	xtables-translate.c xshared.c
-@ENABLE_NFTABLES_TRUE@am_xtables_compat_multi_OBJECTS = xtables_compat_multi-xtables-compat-multi.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-iptables-xml.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables-config-parser.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables-config-syntax.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables-save.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables-restore.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables-standalone.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-nft.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-nft-shared.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-nft-ipv4.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-nft-ipv6.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-nft-arp.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables-arp-standalone.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables-arp.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-getethertype.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-nft-bridge.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables-eb-standalone.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables-eb.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xtables-translate.$(OBJEXT) \
-@ENABLE_NFTABLES_TRUE@	xtables_compat_multi-xshared.$(OBJEXT)
-xtables_compat_multi_OBJECTS = $(am_xtables_compat_multi_OBJECTS)
+	xtables-monitor.c xtables-arp-standalone.c xtables-arp.c \
+	getethertype.c nft-bridge.c xtables-eb-standalone.c \
+	xtables-eb.c xtables-eb-translate.c xtables-translate.c \
+	xshared.c
+@ENABLE_NFTABLES_TRUE@am_xtables_nft_multi_OBJECTS = xtables_nft_multi-xtables-nft-multi.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-iptables-xml.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-config-parser.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-config-syntax.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-save.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-restore.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-standalone.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-nft.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-nft-shared.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-nft-ipv4.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-nft-ipv6.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-nft-arp.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-monitor.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-arp-standalone.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-arp.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-getethertype.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-nft-bridge.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-eb-standalone.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-eb.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-eb-translate.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xtables-translate.$(OBJEXT) \
+@ENABLE_NFTABLES_TRUE@	xtables_nft_multi-xshared.$(OBJEXT)
+xtables_nft_multi_OBJECTS = $(am_xtables_nft_multi_OBJECTS)
 am__DEPENDENCIES_1 =
-@ENABLE_NFTABLES_TRUE@xtables_compat_multi_DEPENDENCIES =  \
+@ENABLE_NFTABLES_TRUE@xtables_nft_multi_DEPENDENCIES =  \
 @ENABLE_NFTABLES_TRUE@	../extensions/libext.a \
 @ENABLE_NFTABLES_TRUE@	../extensions/libext_ebt.a \
 @ENABLE_NFTABLES_TRUE@	$(am__DEPENDENCIES_1) \
@@ -167,37 +198,10 @@ am__DEPENDENCIES_1 =
 @ENABLE_NFTABLES_TRUE@	../extensions/libext_ebt.a \
 @ENABLE_NFTABLES_TRUE@	../extensions/libext_arpt.a \
 @ENABLE_NFTABLES_TRUE@	../libxtables/libxtables.la
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
-xtables_compat_multi_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+xtables_nft_multi_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(xtables_compat_multi_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am__xtables_multi_SOURCES_DIST = xtables-multi.c iptables-xml.c \
-	iptables-save.c iptables-restore.c iptables-standalone.c \
-	iptables.c ip6tables-save.c ip6tables-restore.c \
-	ip6tables-standalone.c ip6tables.c xshared.c
-@ENABLE_IPV4_TRUE@am__objects_1 =  \
-@ENABLE_IPV4_TRUE@	xtables_multi-iptables-save.$(OBJEXT) \
-@ENABLE_IPV4_TRUE@	xtables_multi-iptables-restore.$(OBJEXT) \
-@ENABLE_IPV4_TRUE@	xtables_multi-iptables-standalone.$(OBJEXT) \
-@ENABLE_IPV4_TRUE@	xtables_multi-iptables.$(OBJEXT)
-@ENABLE_IPV6_TRUE@am__objects_2 =  \
-@ENABLE_IPV6_TRUE@	xtables_multi-ip6tables-save.$(OBJEXT) \
-@ENABLE_IPV6_TRUE@	xtables_multi-ip6tables-restore.$(OBJEXT) \
-@ENABLE_IPV6_TRUE@	xtables_multi-ip6tables-standalone.$(OBJEXT) \
-@ENABLE_IPV6_TRUE@	xtables_multi-ip6tables.$(OBJEXT)
-am_xtables_multi_OBJECTS = xtables_multi-xtables-multi.$(OBJEXT) \
-	xtables_multi-iptables-xml.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) xtables_multi-xshared.$(OBJEXT)
-xtables_multi_OBJECTS = $(am_xtables_multi_OBJECTS)
-xtables_multi_DEPENDENCIES = ../extensions/libext.a $(am__append_4) \
-	$(am__append_7) ../libxtables/libxtables.la
-xtables_multi_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(xtables_multi_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+	$(xtables_nft_multi_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -249,9 +253,9 @@ AM_V_YACC = $(am__v_YACC_@AM_V@)
 am__v_YACC_ = $(am__v_YACC_@AM_DEFAULT_V@)
 am__v_YACC_0 = @echo "  YACC    " $@;
 am__v_YACC_1 = 
-SOURCES = $(xtables_compat_multi_SOURCES) $(xtables_multi_SOURCES)
-DIST_SOURCES = $(am__xtables_compat_multi_SOURCES_DIST) \
-	$(am__xtables_multi_SOURCES_DIST)
+SOURCES = $(xtables_legacy_multi_SOURCES) $(xtables_nft_multi_SOURCES)
+DIST_SOURCES = $(am__xtables_legacy_multi_SOURCES_DIST) \
+	$(am__xtables_nft_multi_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -312,9 +316,10 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/iptables-apply.8.in \
 	$(srcdir)/iptables-extensions.8.tmpl.in \
 	$(srcdir)/iptables-restore.8.in $(srcdir)/iptables-save.8.in \
 	$(srcdir)/iptables-xml.1.in $(srcdir)/iptables.8.in \
-	$(srcdir)/xtables.pc.in $(top_srcdir)/build-aux/depcomp \
-	$(top_srcdir)/build-aux/ylwrap xtables-config-parser.c \
-	xtables-config-parser.h xtables-config-syntax.c
+	$(srcdir)/xtables-monitor.8.in $(srcdir)/xtables.pc.in \
+	$(top_srcdir)/build-aux/depcomp $(top_srcdir)/build-aux/ylwrap \
+	xtables-config-parser.c xtables-config-parser.h \
+	xtables-config-syntax.c
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -471,27 +476,27 @@ AM_CFLAGS = ${regular_CFLAGS}
 AM_CPPFLAGS = ${regular_CPPFLAGS} -I${top_builddir}/include -I${top_srcdir}/include -I${top_srcdir} ${kinclude_CPPFLAGS} ${libmnl_CFLAGS} ${libnftnl_CFLAGS} ${libnetfilter_conntrack_CFLAGS}
 AM_YFLAGS = -d
 BUILT_SOURCES = $(am__append_8)
-xtables_multi_SOURCES = xtables-multi.c iptables-xml.c $(am__append_2) \
-	$(am__append_5) xshared.c
-xtables_multi_CFLAGS = ${AM_CFLAGS} $(am__append_1) $(am__append_3) \
-	$(am__append_6)
-xtables_multi_LDADD = ../extensions/libext.a $(am__append_4) \
+xtables_legacy_multi_SOURCES = xtables-legacy-multi.c iptables-xml.c \
+	$(am__append_2) $(am__append_5) xshared.c
+xtables_legacy_multi_CFLAGS = ${AM_CFLAGS} $(am__append_1) \
+	$(am__append_3) $(am__append_6)
+xtables_legacy_multi_LDADD = ../extensions/libext.a $(am__append_4) \
 	$(am__append_7) ../libxtables/libxtables.la -lm
-@ENABLE_NFTABLES_TRUE@xtables_compat_multi_SOURCES =  \
-@ENABLE_NFTABLES_TRUE@	xtables-compat-multi.c iptables-xml.c \
-@ENABLE_NFTABLES_TRUE@	xtables-config-parser.y \
+@ENABLE_NFTABLES_TRUE@xtables_nft_multi_SOURCES = xtables-nft-multi.c \
+@ENABLE_NFTABLES_TRUE@	iptables-xml.c xtables-config-parser.y \
 @ENABLE_NFTABLES_TRUE@	xtables-config-syntax.l xtables-save.c \
 @ENABLE_NFTABLES_TRUE@	xtables-restore.c xtables-standalone.c \
 @ENABLE_NFTABLES_TRUE@	xtables.c nft.c nft-shared.c nft-ipv4.c \
-@ENABLE_NFTABLES_TRUE@	nft-ipv6.c nft-arp.c \
+@ENABLE_NFTABLES_TRUE@	nft-ipv6.c nft-arp.c xtables-monitor.c \
 @ENABLE_NFTABLES_TRUE@	xtables-arp-standalone.c xtables-arp.c \
 @ENABLE_NFTABLES_TRUE@	getethertype.c nft-bridge.c \
 @ENABLE_NFTABLES_TRUE@	xtables-eb-standalone.c xtables-eb.c \
+@ENABLE_NFTABLES_TRUE@	xtables-eb-translate.c \
 @ENABLE_NFTABLES_TRUE@	xtables-translate.c xshared.c
-@ENABLE_NFTABLES_TRUE@xtables_compat_multi_CFLAGS = ${AM_CFLAGS} \
+@ENABLE_NFTABLES_TRUE@xtables_nft_multi_CFLAGS = ${AM_CFLAGS} \
 @ENABLE_NFTABLES_TRUE@	$(am__append_9) -DENABLE_NFTABLES \
 @ENABLE_NFTABLES_TRUE@	-DENABLE_IPV4 -DENABLE_IPV6
-@ENABLE_NFTABLES_TRUE@xtables_compat_multi_LDADD =  \
+@ENABLE_NFTABLES_TRUE@xtables_nft_multi_LDADD =  \
 @ENABLE_NFTABLES_TRUE@	../extensions/libext.a \
 @ENABLE_NFTABLES_TRUE@	../extensions/libext_ebt.a \
 @ENABLE_NFTABLES_TRUE@	${libmnl_LIBS} ${libnftnl_LIBS} \
@@ -503,19 +508,25 @@ xtables_multi_LDADD = ../extensions/libext.a $(am__append_4) \
 @ENABLE_NFTABLES_TRUE@	../libxtables/libxtables.la -lm
 man_MANS = iptables.8 iptables-restore.8 iptables-save.8 \
                    iptables-xml.1 ip6tables.8 ip6tables-restore.8 \
-                   ip6tables-save.8 iptables-extensions.8
+                   ip6tables-save.8 iptables-extensions.8 \
+                   xtables-nft.8 xtables-translate.8 xtables-legacy.8 \
+                   xtables-monitor.8
 
-CLEANFILES = iptables.8 \
+CLEANFILES = iptables.8 xtables-monitor.8 \
 		   xtables-config-parser.c xtables-config-syntax.c
 
 vx_bin_links = iptables-xml
-@ENABLE_IPV4_TRUE@v4_sbin_links = iptables iptables-restore iptables-save
-@ENABLE_IPV6_TRUE@v6_sbin_links = ip6tables ip6tables-restore ip6tables-save
-@ENABLE_NFTABLES_TRUE@x_sbin_links = iptables-compat iptables-compat-restore iptables-compat-save \
-@ENABLE_NFTABLES_TRUE@		ip6tables-compat ip6tables-compat-restore ip6tables-compat-save \
+@ENABLE_IPV4_TRUE@v4_sbin_links = iptables-legacy iptables-legacy-restore iptables-legacy-save \
+@ENABLE_IPV4_TRUE@		 iptables iptables-restore iptables-save
+
+@ENABLE_IPV6_TRUE@v6_sbin_links = ip6tables-legacy ip6tables-legacy-restore ip6tables-legacy-save \
+@ENABLE_IPV6_TRUE@		 ip6tables ip6tables-restore ip6tables-save
+
+@ENABLE_NFTABLES_TRUE@x_sbin_links = iptables-nft iptables-nft-restore iptables-nft-save \
+@ENABLE_NFTABLES_TRUE@		ip6tables-nft ip6tables-nft-restore ip6tables-nft-save \
 @ENABLE_NFTABLES_TRUE@		iptables-translate ip6tables-translate \
 @ENABLE_NFTABLES_TRUE@		iptables-restore-translate ip6tables-restore-translate \
-@ENABLE_NFTABLES_TRUE@		arptables-compat ebtables-compat
+@ENABLE_NFTABLES_TRUE@		arptables ebtables xtables-monitor
 
 pkgconfig_DATA = xtables.pc
 all: $(BUILT_SOURCES)
@@ -566,6 +577,8 @@ iptables-apply.8: $(top_builddir)/config.status $(srcdir)/iptables-apply.8.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 iptables-xml.1: $(top_builddir)/config.status $(srcdir)/iptables-xml.1.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+xtables-monitor.8: $(top_builddir)/config.status $(srcdir)/xtables-monitor.8.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-sbinPROGRAMS: $(sbin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(sbin_PROGRAMS)'; test -n "$(sbindir)" || list=; \
@@ -615,17 +628,17 @@ clean-sbinPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+
+xtables-legacy-multi$(EXEEXT): $(xtables_legacy_multi_OBJECTS) $(xtables_legacy_multi_DEPENDENCIES) $(EXTRA_xtables_legacy_multi_DEPENDENCIES) 
+	@rm -f xtables-legacy-multi$(EXEEXT)
+	$(AM_V_CCLD)$(xtables_legacy_multi_LINK) $(xtables_legacy_multi_OBJECTS) $(xtables_legacy_multi_LDADD) $(LIBS)
 xtables-config-parser.h: xtables-config-parser.c
 	@if test ! -f $@; then rm -f xtables-config-parser.c; else :; fi
 	@if test ! -f $@; then $(MAKE) $(AM_MAKEFLAGS) xtables-config-parser.c; else :; fi
 
-xtables-compat-multi$(EXEEXT): $(xtables_compat_multi_OBJECTS) $(xtables_compat_multi_DEPENDENCIES) $(EXTRA_xtables_compat_multi_DEPENDENCIES) 
-	@rm -f xtables-compat-multi$(EXEEXT)
-	$(AM_V_CCLD)$(xtables_compat_multi_LINK) $(xtables_compat_multi_OBJECTS) $(xtables_compat_multi_LDADD) $(LIBS)
-
-xtables-multi$(EXEEXT): $(xtables_multi_OBJECTS) $(xtables_multi_DEPENDENCIES) $(EXTRA_xtables_multi_DEPENDENCIES) 
-	@rm -f xtables-multi$(EXEEXT)
-	$(AM_V_CCLD)$(xtables_multi_LINK) $(xtables_multi_OBJECTS) $(xtables_multi_LDADD) $(LIBS)
+xtables-nft-multi$(EXEEXT): $(xtables_nft_multi_OBJECTS) $(xtables_nft_multi_DEPENDENCIES) $(EXTRA_xtables_nft_multi_DEPENDENCIES) 
+	@rm -f xtables-nft-multi$(EXEEXT)
+	$(AM_V_CCLD)$(xtables_nft_multi_LINK) $(xtables_nft_multi_OBJECTS) $(xtables_nft_multi_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -633,38 +646,40 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-getethertype.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-iptables-xml.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-nft-arp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-nft-bridge.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-nft-ipv4.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-nft-ipv6.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-nft-shared.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-nft.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xshared.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-arp-standalone.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-arp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-compat-multi.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-config-parser.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-config-syntax.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-eb-standalone.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-eb.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-restore.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-save.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-standalone.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables-translate.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_compat_multi-xtables.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-ip6tables-restore.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-ip6tables-save.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-ip6tables-standalone.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-ip6tables.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-iptables-restore.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-iptables-save.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-iptables-standalone.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-iptables-xml.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-iptables.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-xshared.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_multi-xtables-multi.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-ip6tables-restore.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-ip6tables-save.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-ip6tables-standalone.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-ip6tables.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-iptables-restore.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-iptables-save.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-iptables-standalone.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-iptables-xml.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-iptables.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-xshared.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_legacy_multi-xtables-legacy-multi.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-getethertype.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-iptables-xml.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-nft-arp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-nft-bridge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-nft-ipv4.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-nft-ipv6.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-nft-shared.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-nft.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xshared.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-arp-standalone.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-arp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-config-parser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-config-syntax.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-eb-standalone.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-eb-translate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-eb.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-monitor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-nft-multi.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-restore.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-save.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-standalone.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables-translate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xtables_nft_multi-xtables.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -687,453 +702,481 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
-xtables_compat_multi-xtables-compat-multi.o: xtables-compat-multi.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-compat-multi.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-compat-multi.Tpo -c -o xtables_compat_multi-xtables-compat-multi.o `test -f 'xtables-compat-multi.c' || echo '$(srcdir)/'`xtables-compat-multi.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-compat-multi.Tpo $(DEPDIR)/xtables_compat_multi-xtables-compat-multi.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-compat-multi.c' object='xtables_compat_multi-xtables-compat-multi.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-xtables-legacy-multi.o: xtables-legacy-multi.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-xtables-legacy-multi.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-xtables-legacy-multi.Tpo -c -o xtables_legacy_multi-xtables-legacy-multi.o `test -f 'xtables-legacy-multi.c' || echo '$(srcdir)/'`xtables-legacy-multi.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-xtables-legacy-multi.Tpo $(DEPDIR)/xtables_legacy_multi-xtables-legacy-multi.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-legacy-multi.c' object='xtables_legacy_multi-xtables-legacy-multi.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-compat-multi.o `test -f 'xtables-compat-multi.c' || echo '$(srcdir)/'`xtables-compat-multi.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-xtables-legacy-multi.o `test -f 'xtables-legacy-multi.c' || echo '$(srcdir)/'`xtables-legacy-multi.c
 
-xtables_compat_multi-xtables-compat-multi.obj: xtables-compat-multi.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-compat-multi.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-compat-multi.Tpo -c -o xtables_compat_multi-xtables-compat-multi.obj `if test -f 'xtables-compat-multi.c'; then $(CYGPATH_W) 'xtables-compat-multi.c'; else $(CYGPATH_W) '$(srcdir)/xtables-compat-multi.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-compat-multi.Tpo $(DEPDIR)/xtables_compat_multi-xtables-compat-multi.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-compat-multi.c' object='xtables_compat_multi-xtables-compat-multi.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-xtables-legacy-multi.obj: xtables-legacy-multi.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-xtables-legacy-multi.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-xtables-legacy-multi.Tpo -c -o xtables_legacy_multi-xtables-legacy-multi.obj `if test -f 'xtables-legacy-multi.c'; then $(CYGPATH_W) 'xtables-legacy-multi.c'; else $(CYGPATH_W) '$(srcdir)/xtables-legacy-multi.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-xtables-legacy-multi.Tpo $(DEPDIR)/xtables_legacy_multi-xtables-legacy-multi.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-legacy-multi.c' object='xtables_legacy_multi-xtables-legacy-multi.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-compat-multi.obj `if test -f 'xtables-compat-multi.c'; then $(CYGPATH_W) 'xtables-compat-multi.c'; else $(CYGPATH_W) '$(srcdir)/xtables-compat-multi.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-xtables-legacy-multi.obj `if test -f 'xtables-legacy-multi.c'; then $(CYGPATH_W) 'xtables-legacy-multi.c'; else $(CYGPATH_W) '$(srcdir)/xtables-legacy-multi.c'; fi`
 
-xtables_compat_multi-iptables-xml.o: iptables-xml.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-iptables-xml.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-iptables-xml.Tpo -c -o xtables_compat_multi-iptables-xml.o `test -f 'iptables-xml.c' || echo '$(srcdir)/'`iptables-xml.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-iptables-xml.Tpo $(DEPDIR)/xtables_compat_multi-iptables-xml.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-xml.c' object='xtables_compat_multi-iptables-xml.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-iptables-xml.o: iptables-xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-iptables-xml.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-iptables-xml.Tpo -c -o xtables_legacy_multi-iptables-xml.o `test -f 'iptables-xml.c' || echo '$(srcdir)/'`iptables-xml.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-iptables-xml.Tpo $(DEPDIR)/xtables_legacy_multi-iptables-xml.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-xml.c' object='xtables_legacy_multi-iptables-xml.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-iptables-xml.o `test -f 'iptables-xml.c' || echo '$(srcdir)/'`iptables-xml.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-iptables-xml.o `test -f 'iptables-xml.c' || echo '$(srcdir)/'`iptables-xml.c
 
-xtables_compat_multi-iptables-xml.obj: iptables-xml.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-iptables-xml.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-iptables-xml.Tpo -c -o xtables_compat_multi-iptables-xml.obj `if test -f 'iptables-xml.c'; then $(CYGPATH_W) 'iptables-xml.c'; else $(CYGPATH_W) '$(srcdir)/iptables-xml.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-iptables-xml.Tpo $(DEPDIR)/xtables_compat_multi-iptables-xml.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-xml.c' object='xtables_compat_multi-iptables-xml.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-iptables-xml.obj: iptables-xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-iptables-xml.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-iptables-xml.Tpo -c -o xtables_legacy_multi-iptables-xml.obj `if test -f 'iptables-xml.c'; then $(CYGPATH_W) 'iptables-xml.c'; else $(CYGPATH_W) '$(srcdir)/iptables-xml.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-iptables-xml.Tpo $(DEPDIR)/xtables_legacy_multi-iptables-xml.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-xml.c' object='xtables_legacy_multi-iptables-xml.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-iptables-xml.obj `if test -f 'iptables-xml.c'; then $(CYGPATH_W) 'iptables-xml.c'; else $(CYGPATH_W) '$(srcdir)/iptables-xml.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-iptables-xml.obj `if test -f 'iptables-xml.c'; then $(CYGPATH_W) 'iptables-xml.c'; else $(CYGPATH_W) '$(srcdir)/iptables-xml.c'; fi`
 
-xtables_compat_multi-xtables-config-parser.o: xtables-config-parser.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-config-parser.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-config-parser.Tpo -c -o xtables_compat_multi-xtables-config-parser.o `test -f 'xtables-config-parser.c' || echo '$(srcdir)/'`xtables-config-parser.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-config-parser.Tpo $(DEPDIR)/xtables_compat_multi-xtables-config-parser.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-config-parser.c' object='xtables_compat_multi-xtables-config-parser.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-iptables-save.o: iptables-save.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-iptables-save.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-iptables-save.Tpo -c -o xtables_legacy_multi-iptables-save.o `test -f 'iptables-save.c' || echo '$(srcdir)/'`iptables-save.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-iptables-save.Tpo $(DEPDIR)/xtables_legacy_multi-iptables-save.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-save.c' object='xtables_legacy_multi-iptables-save.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-config-parser.o `test -f 'xtables-config-parser.c' || echo '$(srcdir)/'`xtables-config-parser.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-iptables-save.o `test -f 'iptables-save.c' || echo '$(srcdir)/'`iptables-save.c
 
-xtables_compat_multi-xtables-config-parser.obj: xtables-config-parser.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-config-parser.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-config-parser.Tpo -c -o xtables_compat_multi-xtables-config-parser.obj `if test -f 'xtables-config-parser.c'; then $(CYGPATH_W) 'xtables-config-parser.c'; else $(CYGPATH_W) '$(srcdir)/xtables-config-parser.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-config-parser.Tpo $(DEPDIR)/xtables_compat_multi-xtables-config-parser.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-config-parser.c' object='xtables_compat_multi-xtables-config-parser.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-iptables-save.obj: iptables-save.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-iptables-save.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-iptables-save.Tpo -c -o xtables_legacy_multi-iptables-save.obj `if test -f 'iptables-save.c'; then $(CYGPATH_W) 'iptables-save.c'; else $(CYGPATH_W) '$(srcdir)/iptables-save.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-iptables-save.Tpo $(DEPDIR)/xtables_legacy_multi-iptables-save.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-save.c' object='xtables_legacy_multi-iptables-save.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-config-parser.obj `if test -f 'xtables-config-parser.c'; then $(CYGPATH_W) 'xtables-config-parser.c'; else $(CYGPATH_W) '$(srcdir)/xtables-config-parser.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-iptables-save.obj `if test -f 'iptables-save.c'; then $(CYGPATH_W) 'iptables-save.c'; else $(CYGPATH_W) '$(srcdir)/iptables-save.c'; fi`
 
-xtables_compat_multi-xtables-config-syntax.o: xtables-config-syntax.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-config-syntax.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-config-syntax.Tpo -c -o xtables_compat_multi-xtables-config-syntax.o `test -f 'xtables-config-syntax.c' || echo '$(srcdir)/'`xtables-config-syntax.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-config-syntax.Tpo $(DEPDIR)/xtables_compat_multi-xtables-config-syntax.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-config-syntax.c' object='xtables_compat_multi-xtables-config-syntax.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-iptables-restore.o: iptables-restore.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-iptables-restore.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-iptables-restore.Tpo -c -o xtables_legacy_multi-iptables-restore.o `test -f 'iptables-restore.c' || echo '$(srcdir)/'`iptables-restore.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-iptables-restore.Tpo $(DEPDIR)/xtables_legacy_multi-iptables-restore.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-restore.c' object='xtables_legacy_multi-iptables-restore.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-config-syntax.o `test -f 'xtables-config-syntax.c' || echo '$(srcdir)/'`xtables-config-syntax.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-iptables-restore.o `test -f 'iptables-restore.c' || echo '$(srcdir)/'`iptables-restore.c
 
-xtables_compat_multi-xtables-config-syntax.obj: xtables-config-syntax.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-config-syntax.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-config-syntax.Tpo -c -o xtables_compat_multi-xtables-config-syntax.obj `if test -f 'xtables-config-syntax.c'; then $(CYGPATH_W) 'xtables-config-syntax.c'; else $(CYGPATH_W) '$(srcdir)/xtables-config-syntax.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-config-syntax.Tpo $(DEPDIR)/xtables_compat_multi-xtables-config-syntax.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-config-syntax.c' object='xtables_compat_multi-xtables-config-syntax.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-iptables-restore.obj: iptables-restore.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-iptables-restore.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-iptables-restore.Tpo -c -o xtables_legacy_multi-iptables-restore.obj `if test -f 'iptables-restore.c'; then $(CYGPATH_W) 'iptables-restore.c'; else $(CYGPATH_W) '$(srcdir)/iptables-restore.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-iptables-restore.Tpo $(DEPDIR)/xtables_legacy_multi-iptables-restore.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-restore.c' object='xtables_legacy_multi-iptables-restore.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-config-syntax.obj `if test -f 'xtables-config-syntax.c'; then $(CYGPATH_W) 'xtables-config-syntax.c'; else $(CYGPATH_W) '$(srcdir)/xtables-config-syntax.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-iptables-restore.obj `if test -f 'iptables-restore.c'; then $(CYGPATH_W) 'iptables-restore.c'; else $(CYGPATH_W) '$(srcdir)/iptables-restore.c'; fi`
 
-xtables_compat_multi-xtables-save.o: xtables-save.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-save.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-save.Tpo -c -o xtables_compat_multi-xtables-save.o `test -f 'xtables-save.c' || echo '$(srcdir)/'`xtables-save.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-save.Tpo $(DEPDIR)/xtables_compat_multi-xtables-save.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-save.c' object='xtables_compat_multi-xtables-save.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-iptables-standalone.o: iptables-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-iptables-standalone.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-iptables-standalone.Tpo -c -o xtables_legacy_multi-iptables-standalone.o `test -f 'iptables-standalone.c' || echo '$(srcdir)/'`iptables-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-iptables-standalone.Tpo $(DEPDIR)/xtables_legacy_multi-iptables-standalone.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-standalone.c' object='xtables_legacy_multi-iptables-standalone.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-save.o `test -f 'xtables-save.c' || echo '$(srcdir)/'`xtables-save.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-iptables-standalone.o `test -f 'iptables-standalone.c' || echo '$(srcdir)/'`iptables-standalone.c
 
-xtables_compat_multi-xtables-save.obj: xtables-save.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-save.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-save.Tpo -c -o xtables_compat_multi-xtables-save.obj `if test -f 'xtables-save.c'; then $(CYGPATH_W) 'xtables-save.c'; else $(CYGPATH_W) '$(srcdir)/xtables-save.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-save.Tpo $(DEPDIR)/xtables_compat_multi-xtables-save.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-save.c' object='xtables_compat_multi-xtables-save.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-iptables-standalone.obj: iptables-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-iptables-standalone.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-iptables-standalone.Tpo -c -o xtables_legacy_multi-iptables-standalone.obj `if test -f 'iptables-standalone.c'; then $(CYGPATH_W) 'iptables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/iptables-standalone.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-iptables-standalone.Tpo $(DEPDIR)/xtables_legacy_multi-iptables-standalone.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-standalone.c' object='xtables_legacy_multi-iptables-standalone.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-save.obj `if test -f 'xtables-save.c'; then $(CYGPATH_W) 'xtables-save.c'; else $(CYGPATH_W) '$(srcdir)/xtables-save.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-iptables-standalone.obj `if test -f 'iptables-standalone.c'; then $(CYGPATH_W) 'iptables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/iptables-standalone.c'; fi`
 
-xtables_compat_multi-xtables-restore.o: xtables-restore.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-restore.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-restore.Tpo -c -o xtables_compat_multi-xtables-restore.o `test -f 'xtables-restore.c' || echo '$(srcdir)/'`xtables-restore.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-restore.Tpo $(DEPDIR)/xtables_compat_multi-xtables-restore.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-restore.c' object='xtables_compat_multi-xtables-restore.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-iptables.o: iptables.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-iptables.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-iptables.Tpo -c -o xtables_legacy_multi-iptables.o `test -f 'iptables.c' || echo '$(srcdir)/'`iptables.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-iptables.Tpo $(DEPDIR)/xtables_legacy_multi-iptables.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables.c' object='xtables_legacy_multi-iptables.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-restore.o `test -f 'xtables-restore.c' || echo '$(srcdir)/'`xtables-restore.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-iptables.o `test -f 'iptables.c' || echo '$(srcdir)/'`iptables.c
 
-xtables_compat_multi-xtables-restore.obj: xtables-restore.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-restore.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-restore.Tpo -c -o xtables_compat_multi-xtables-restore.obj `if test -f 'xtables-restore.c'; then $(CYGPATH_W) 'xtables-restore.c'; else $(CYGPATH_W) '$(srcdir)/xtables-restore.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-restore.Tpo $(DEPDIR)/xtables_compat_multi-xtables-restore.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-restore.c' object='xtables_compat_multi-xtables-restore.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-iptables.obj: iptables.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-iptables.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-iptables.Tpo -c -o xtables_legacy_multi-iptables.obj `if test -f 'iptables.c'; then $(CYGPATH_W) 'iptables.c'; else $(CYGPATH_W) '$(srcdir)/iptables.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-iptables.Tpo $(DEPDIR)/xtables_legacy_multi-iptables.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables.c' object='xtables_legacy_multi-iptables.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-restore.obj `if test -f 'xtables-restore.c'; then $(CYGPATH_W) 'xtables-restore.c'; else $(CYGPATH_W) '$(srcdir)/xtables-restore.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-iptables.obj `if test -f 'iptables.c'; then $(CYGPATH_W) 'iptables.c'; else $(CYGPATH_W) '$(srcdir)/iptables.c'; fi`
 
-xtables_compat_multi-xtables-standalone.o: xtables-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-standalone.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-standalone.Tpo -c -o xtables_compat_multi-xtables-standalone.o `test -f 'xtables-standalone.c' || echo '$(srcdir)/'`xtables-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-standalone.Tpo $(DEPDIR)/xtables_compat_multi-xtables-standalone.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-standalone.c' object='xtables_compat_multi-xtables-standalone.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-ip6tables-save.o: ip6tables-save.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-ip6tables-save.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-ip6tables-save.Tpo -c -o xtables_legacy_multi-ip6tables-save.o `test -f 'ip6tables-save.c' || echo '$(srcdir)/'`ip6tables-save.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-ip6tables-save.Tpo $(DEPDIR)/xtables_legacy_multi-ip6tables-save.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-save.c' object='xtables_legacy_multi-ip6tables-save.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-standalone.o `test -f 'xtables-standalone.c' || echo '$(srcdir)/'`xtables-standalone.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-ip6tables-save.o `test -f 'ip6tables-save.c' || echo '$(srcdir)/'`ip6tables-save.c
 
-xtables_compat_multi-xtables-standalone.obj: xtables-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-standalone.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-standalone.Tpo -c -o xtables_compat_multi-xtables-standalone.obj `if test -f 'xtables-standalone.c'; then $(CYGPATH_W) 'xtables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-standalone.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-standalone.Tpo $(DEPDIR)/xtables_compat_multi-xtables-standalone.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-standalone.c' object='xtables_compat_multi-xtables-standalone.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-ip6tables-save.obj: ip6tables-save.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-ip6tables-save.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-ip6tables-save.Tpo -c -o xtables_legacy_multi-ip6tables-save.obj `if test -f 'ip6tables-save.c'; then $(CYGPATH_W) 'ip6tables-save.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-save.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-ip6tables-save.Tpo $(DEPDIR)/xtables_legacy_multi-ip6tables-save.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-save.c' object='xtables_legacy_multi-ip6tables-save.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-standalone.obj `if test -f 'xtables-standalone.c'; then $(CYGPATH_W) 'xtables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-standalone.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-ip6tables-save.obj `if test -f 'ip6tables-save.c'; then $(CYGPATH_W) 'ip6tables-save.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-save.c'; fi`
 
-xtables_compat_multi-xtables.o: xtables.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables.Tpo -c -o xtables_compat_multi-xtables.o `test -f 'xtables.c' || echo '$(srcdir)/'`xtables.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables.Tpo $(DEPDIR)/xtables_compat_multi-xtables.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables.c' object='xtables_compat_multi-xtables.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-ip6tables-restore.o: ip6tables-restore.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-ip6tables-restore.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-ip6tables-restore.Tpo -c -o xtables_legacy_multi-ip6tables-restore.o `test -f 'ip6tables-restore.c' || echo '$(srcdir)/'`ip6tables-restore.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-ip6tables-restore.Tpo $(DEPDIR)/xtables_legacy_multi-ip6tables-restore.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-restore.c' object='xtables_legacy_multi-ip6tables-restore.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables.o `test -f 'xtables.c' || echo '$(srcdir)/'`xtables.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-ip6tables-restore.o `test -f 'ip6tables-restore.c' || echo '$(srcdir)/'`ip6tables-restore.c
 
-xtables_compat_multi-xtables.obj: xtables.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables.Tpo -c -o xtables_compat_multi-xtables.obj `if test -f 'xtables.c'; then $(CYGPATH_W) 'xtables.c'; else $(CYGPATH_W) '$(srcdir)/xtables.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables.Tpo $(DEPDIR)/xtables_compat_multi-xtables.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables.c' object='xtables_compat_multi-xtables.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-ip6tables-restore.obj: ip6tables-restore.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-ip6tables-restore.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-ip6tables-restore.Tpo -c -o xtables_legacy_multi-ip6tables-restore.obj `if test -f 'ip6tables-restore.c'; then $(CYGPATH_W) 'ip6tables-restore.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-restore.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-ip6tables-restore.Tpo $(DEPDIR)/xtables_legacy_multi-ip6tables-restore.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-restore.c' object='xtables_legacy_multi-ip6tables-restore.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables.obj `if test -f 'xtables.c'; then $(CYGPATH_W) 'xtables.c'; else $(CYGPATH_W) '$(srcdir)/xtables.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-ip6tables-restore.obj `if test -f 'ip6tables-restore.c'; then $(CYGPATH_W) 'ip6tables-restore.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-restore.c'; fi`
 
-xtables_compat_multi-nft.o: nft.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft.Tpo -c -o xtables_compat_multi-nft.o `test -f 'nft.c' || echo '$(srcdir)/'`nft.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft.Tpo $(DEPDIR)/xtables_compat_multi-nft.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft.c' object='xtables_compat_multi-nft.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-ip6tables-standalone.o: ip6tables-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-ip6tables-standalone.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-ip6tables-standalone.Tpo -c -o xtables_legacy_multi-ip6tables-standalone.o `test -f 'ip6tables-standalone.c' || echo '$(srcdir)/'`ip6tables-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-ip6tables-standalone.Tpo $(DEPDIR)/xtables_legacy_multi-ip6tables-standalone.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-standalone.c' object='xtables_legacy_multi-ip6tables-standalone.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft.o `test -f 'nft.c' || echo '$(srcdir)/'`nft.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-ip6tables-standalone.o `test -f 'ip6tables-standalone.c' || echo '$(srcdir)/'`ip6tables-standalone.c
 
-xtables_compat_multi-nft.obj: nft.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft.Tpo -c -o xtables_compat_multi-nft.obj `if test -f 'nft.c'; then $(CYGPATH_W) 'nft.c'; else $(CYGPATH_W) '$(srcdir)/nft.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft.Tpo $(DEPDIR)/xtables_compat_multi-nft.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft.c' object='xtables_compat_multi-nft.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-ip6tables-standalone.obj: ip6tables-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-ip6tables-standalone.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-ip6tables-standalone.Tpo -c -o xtables_legacy_multi-ip6tables-standalone.obj `if test -f 'ip6tables-standalone.c'; then $(CYGPATH_W) 'ip6tables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-standalone.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-ip6tables-standalone.Tpo $(DEPDIR)/xtables_legacy_multi-ip6tables-standalone.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-standalone.c' object='xtables_legacy_multi-ip6tables-standalone.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft.obj `if test -f 'nft.c'; then $(CYGPATH_W) 'nft.c'; else $(CYGPATH_W) '$(srcdir)/nft.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-ip6tables-standalone.obj `if test -f 'ip6tables-standalone.c'; then $(CYGPATH_W) 'ip6tables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-standalone.c'; fi`
 
-xtables_compat_multi-nft-shared.o: nft-shared.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft-shared.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft-shared.Tpo -c -o xtables_compat_multi-nft-shared.o `test -f 'nft-shared.c' || echo '$(srcdir)/'`nft-shared.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft-shared.Tpo $(DEPDIR)/xtables_compat_multi-nft-shared.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-shared.c' object='xtables_compat_multi-nft-shared.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-ip6tables.o: ip6tables.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-ip6tables.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-ip6tables.Tpo -c -o xtables_legacy_multi-ip6tables.o `test -f 'ip6tables.c' || echo '$(srcdir)/'`ip6tables.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-ip6tables.Tpo $(DEPDIR)/xtables_legacy_multi-ip6tables.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables.c' object='xtables_legacy_multi-ip6tables.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft-shared.o `test -f 'nft-shared.c' || echo '$(srcdir)/'`nft-shared.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-ip6tables.o `test -f 'ip6tables.c' || echo '$(srcdir)/'`ip6tables.c
 
-xtables_compat_multi-nft-shared.obj: nft-shared.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft-shared.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft-shared.Tpo -c -o xtables_compat_multi-nft-shared.obj `if test -f 'nft-shared.c'; then $(CYGPATH_W) 'nft-shared.c'; else $(CYGPATH_W) '$(srcdir)/nft-shared.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft-shared.Tpo $(DEPDIR)/xtables_compat_multi-nft-shared.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-shared.c' object='xtables_compat_multi-nft-shared.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-ip6tables.obj: ip6tables.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-ip6tables.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-ip6tables.Tpo -c -o xtables_legacy_multi-ip6tables.obj `if test -f 'ip6tables.c'; then $(CYGPATH_W) 'ip6tables.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-ip6tables.Tpo $(DEPDIR)/xtables_legacy_multi-ip6tables.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables.c' object='xtables_legacy_multi-ip6tables.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft-shared.obj `if test -f 'nft-shared.c'; then $(CYGPATH_W) 'nft-shared.c'; else $(CYGPATH_W) '$(srcdir)/nft-shared.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-ip6tables.obj `if test -f 'ip6tables.c'; then $(CYGPATH_W) 'ip6tables.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables.c'; fi`
 
-xtables_compat_multi-nft-ipv4.o: nft-ipv4.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft-ipv4.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft-ipv4.Tpo -c -o xtables_compat_multi-nft-ipv4.o `test -f 'nft-ipv4.c' || echo '$(srcdir)/'`nft-ipv4.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft-ipv4.Tpo $(DEPDIR)/xtables_compat_multi-nft-ipv4.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-ipv4.c' object='xtables_compat_multi-nft-ipv4.o' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-xshared.o: xshared.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-xshared.o -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-xshared.Tpo -c -o xtables_legacy_multi-xshared.o `test -f 'xshared.c' || echo '$(srcdir)/'`xshared.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-xshared.Tpo $(DEPDIR)/xtables_legacy_multi-xshared.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xshared.c' object='xtables_legacy_multi-xshared.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft-ipv4.o `test -f 'nft-ipv4.c' || echo '$(srcdir)/'`nft-ipv4.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-xshared.o `test -f 'xshared.c' || echo '$(srcdir)/'`xshared.c
 
-xtables_compat_multi-nft-ipv4.obj: nft-ipv4.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft-ipv4.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft-ipv4.Tpo -c -o xtables_compat_multi-nft-ipv4.obj `if test -f 'nft-ipv4.c'; then $(CYGPATH_W) 'nft-ipv4.c'; else $(CYGPATH_W) '$(srcdir)/nft-ipv4.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft-ipv4.Tpo $(DEPDIR)/xtables_compat_multi-nft-ipv4.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-ipv4.c' object='xtables_compat_multi-nft-ipv4.obj' libtool=no @AMDEPBACKSLASH@
+xtables_legacy_multi-xshared.obj: xshared.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -MT xtables_legacy_multi-xshared.obj -MD -MP -MF $(DEPDIR)/xtables_legacy_multi-xshared.Tpo -c -o xtables_legacy_multi-xshared.obj `if test -f 'xshared.c'; then $(CYGPATH_W) 'xshared.c'; else $(CYGPATH_W) '$(srcdir)/xshared.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_legacy_multi-xshared.Tpo $(DEPDIR)/xtables_legacy_multi-xshared.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xshared.c' object='xtables_legacy_multi-xshared.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft-ipv4.obj `if test -f 'nft-ipv4.c'; then $(CYGPATH_W) 'nft-ipv4.c'; else $(CYGPATH_W) '$(srcdir)/nft-ipv4.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_legacy_multi_CFLAGS) $(CFLAGS) -c -o xtables_legacy_multi-xshared.obj `if test -f 'xshared.c'; then $(CYGPATH_W) 'xshared.c'; else $(CYGPATH_W) '$(srcdir)/xshared.c'; fi`
 
-xtables_compat_multi-nft-ipv6.o: nft-ipv6.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft-ipv6.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft-ipv6.Tpo -c -o xtables_compat_multi-nft-ipv6.o `test -f 'nft-ipv6.c' || echo '$(srcdir)/'`nft-ipv6.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft-ipv6.Tpo $(DEPDIR)/xtables_compat_multi-nft-ipv6.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-ipv6.c' object='xtables_compat_multi-nft-ipv6.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-nft-multi.o: xtables-nft-multi.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-nft-multi.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-nft-multi.Tpo -c -o xtables_nft_multi-xtables-nft-multi.o `test -f 'xtables-nft-multi.c' || echo '$(srcdir)/'`xtables-nft-multi.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-nft-multi.Tpo $(DEPDIR)/xtables_nft_multi-xtables-nft-multi.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-nft-multi.c' object='xtables_nft_multi-xtables-nft-multi.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft-ipv6.o `test -f 'nft-ipv6.c' || echo '$(srcdir)/'`nft-ipv6.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-nft-multi.o `test -f 'xtables-nft-multi.c' || echo '$(srcdir)/'`xtables-nft-multi.c
 
-xtables_compat_multi-nft-ipv6.obj: nft-ipv6.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft-ipv6.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft-ipv6.Tpo -c -o xtables_compat_multi-nft-ipv6.obj `if test -f 'nft-ipv6.c'; then $(CYGPATH_W) 'nft-ipv6.c'; else $(CYGPATH_W) '$(srcdir)/nft-ipv6.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft-ipv6.Tpo $(DEPDIR)/xtables_compat_multi-nft-ipv6.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-ipv6.c' object='xtables_compat_multi-nft-ipv6.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-nft-multi.obj: xtables-nft-multi.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-nft-multi.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-nft-multi.Tpo -c -o xtables_nft_multi-xtables-nft-multi.obj `if test -f 'xtables-nft-multi.c'; then $(CYGPATH_W) 'xtables-nft-multi.c'; else $(CYGPATH_W) '$(srcdir)/xtables-nft-multi.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-nft-multi.Tpo $(DEPDIR)/xtables_nft_multi-xtables-nft-multi.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-nft-multi.c' object='xtables_nft_multi-xtables-nft-multi.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft-ipv6.obj `if test -f 'nft-ipv6.c'; then $(CYGPATH_W) 'nft-ipv6.c'; else $(CYGPATH_W) '$(srcdir)/nft-ipv6.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-nft-multi.obj `if test -f 'xtables-nft-multi.c'; then $(CYGPATH_W) 'xtables-nft-multi.c'; else $(CYGPATH_W) '$(srcdir)/xtables-nft-multi.c'; fi`
 
-xtables_compat_multi-nft-arp.o: nft-arp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft-arp.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft-arp.Tpo -c -o xtables_compat_multi-nft-arp.o `test -f 'nft-arp.c' || echo '$(srcdir)/'`nft-arp.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft-arp.Tpo $(DEPDIR)/xtables_compat_multi-nft-arp.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-arp.c' object='xtables_compat_multi-nft-arp.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-iptables-xml.o: iptables-xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-iptables-xml.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-iptables-xml.Tpo -c -o xtables_nft_multi-iptables-xml.o `test -f 'iptables-xml.c' || echo '$(srcdir)/'`iptables-xml.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-iptables-xml.Tpo $(DEPDIR)/xtables_nft_multi-iptables-xml.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-xml.c' object='xtables_nft_multi-iptables-xml.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft-arp.o `test -f 'nft-arp.c' || echo '$(srcdir)/'`nft-arp.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-iptables-xml.o `test -f 'iptables-xml.c' || echo '$(srcdir)/'`iptables-xml.c
 
-xtables_compat_multi-nft-arp.obj: nft-arp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft-arp.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft-arp.Tpo -c -o xtables_compat_multi-nft-arp.obj `if test -f 'nft-arp.c'; then $(CYGPATH_W) 'nft-arp.c'; else $(CYGPATH_W) '$(srcdir)/nft-arp.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft-arp.Tpo $(DEPDIR)/xtables_compat_multi-nft-arp.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-arp.c' object='xtables_compat_multi-nft-arp.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-iptables-xml.obj: iptables-xml.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-iptables-xml.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-iptables-xml.Tpo -c -o xtables_nft_multi-iptables-xml.obj `if test -f 'iptables-xml.c'; then $(CYGPATH_W) 'iptables-xml.c'; else $(CYGPATH_W) '$(srcdir)/iptables-xml.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-iptables-xml.Tpo $(DEPDIR)/xtables_nft_multi-iptables-xml.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-xml.c' object='xtables_nft_multi-iptables-xml.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft-arp.obj `if test -f 'nft-arp.c'; then $(CYGPATH_W) 'nft-arp.c'; else $(CYGPATH_W) '$(srcdir)/nft-arp.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-iptables-xml.obj `if test -f 'iptables-xml.c'; then $(CYGPATH_W) 'iptables-xml.c'; else $(CYGPATH_W) '$(srcdir)/iptables-xml.c'; fi`
 
-xtables_compat_multi-xtables-arp-standalone.o: xtables-arp-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-arp-standalone.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-arp-standalone.Tpo -c -o xtables_compat_multi-xtables-arp-standalone.o `test -f 'xtables-arp-standalone.c' || echo '$(srcdir)/'`xtables-arp-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-arp-standalone.Tpo $(DEPDIR)/xtables_compat_multi-xtables-arp-standalone.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-arp-standalone.c' object='xtables_compat_multi-xtables-arp-standalone.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-config-parser.o: xtables-config-parser.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-config-parser.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-config-parser.Tpo -c -o xtables_nft_multi-xtables-config-parser.o `test -f 'xtables-config-parser.c' || echo '$(srcdir)/'`xtables-config-parser.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-config-parser.Tpo $(DEPDIR)/xtables_nft_multi-xtables-config-parser.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-config-parser.c' object='xtables_nft_multi-xtables-config-parser.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-arp-standalone.o `test -f 'xtables-arp-standalone.c' || echo '$(srcdir)/'`xtables-arp-standalone.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-config-parser.o `test -f 'xtables-config-parser.c' || echo '$(srcdir)/'`xtables-config-parser.c
 
-xtables_compat_multi-xtables-arp-standalone.obj: xtables-arp-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-arp-standalone.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-arp-standalone.Tpo -c -o xtables_compat_multi-xtables-arp-standalone.obj `if test -f 'xtables-arp-standalone.c'; then $(CYGPATH_W) 'xtables-arp-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-arp-standalone.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-arp-standalone.Tpo $(DEPDIR)/xtables_compat_multi-xtables-arp-standalone.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-arp-standalone.c' object='xtables_compat_multi-xtables-arp-standalone.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-config-parser.obj: xtables-config-parser.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-config-parser.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-config-parser.Tpo -c -o xtables_nft_multi-xtables-config-parser.obj `if test -f 'xtables-config-parser.c'; then $(CYGPATH_W) 'xtables-config-parser.c'; else $(CYGPATH_W) '$(srcdir)/xtables-config-parser.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-config-parser.Tpo $(DEPDIR)/xtables_nft_multi-xtables-config-parser.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-config-parser.c' object='xtables_nft_multi-xtables-config-parser.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-arp-standalone.obj `if test -f 'xtables-arp-standalone.c'; then $(CYGPATH_W) 'xtables-arp-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-arp-standalone.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-config-parser.obj `if test -f 'xtables-config-parser.c'; then $(CYGPATH_W) 'xtables-config-parser.c'; else $(CYGPATH_W) '$(srcdir)/xtables-config-parser.c'; fi`
 
-xtables_compat_multi-xtables-arp.o: xtables-arp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-arp.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-arp.Tpo -c -o xtables_compat_multi-xtables-arp.o `test -f 'xtables-arp.c' || echo '$(srcdir)/'`xtables-arp.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-arp.Tpo $(DEPDIR)/xtables_compat_multi-xtables-arp.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-arp.c' object='xtables_compat_multi-xtables-arp.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-config-syntax.o: xtables-config-syntax.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-config-syntax.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-config-syntax.Tpo -c -o xtables_nft_multi-xtables-config-syntax.o `test -f 'xtables-config-syntax.c' || echo '$(srcdir)/'`xtables-config-syntax.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-config-syntax.Tpo $(DEPDIR)/xtables_nft_multi-xtables-config-syntax.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-config-syntax.c' object='xtables_nft_multi-xtables-config-syntax.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-arp.o `test -f 'xtables-arp.c' || echo '$(srcdir)/'`xtables-arp.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-config-syntax.o `test -f 'xtables-config-syntax.c' || echo '$(srcdir)/'`xtables-config-syntax.c
 
-xtables_compat_multi-xtables-arp.obj: xtables-arp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-arp.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-arp.Tpo -c -o xtables_compat_multi-xtables-arp.obj `if test -f 'xtables-arp.c'; then $(CYGPATH_W) 'xtables-arp.c'; else $(CYGPATH_W) '$(srcdir)/xtables-arp.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-arp.Tpo $(DEPDIR)/xtables_compat_multi-xtables-arp.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-arp.c' object='xtables_compat_multi-xtables-arp.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-config-syntax.obj: xtables-config-syntax.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-config-syntax.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-config-syntax.Tpo -c -o xtables_nft_multi-xtables-config-syntax.obj `if test -f 'xtables-config-syntax.c'; then $(CYGPATH_W) 'xtables-config-syntax.c'; else $(CYGPATH_W) '$(srcdir)/xtables-config-syntax.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-config-syntax.Tpo $(DEPDIR)/xtables_nft_multi-xtables-config-syntax.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-config-syntax.c' object='xtables_nft_multi-xtables-config-syntax.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-arp.obj `if test -f 'xtables-arp.c'; then $(CYGPATH_W) 'xtables-arp.c'; else $(CYGPATH_W) '$(srcdir)/xtables-arp.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-config-syntax.obj `if test -f 'xtables-config-syntax.c'; then $(CYGPATH_W) 'xtables-config-syntax.c'; else $(CYGPATH_W) '$(srcdir)/xtables-config-syntax.c'; fi`
 
-xtables_compat_multi-getethertype.o: getethertype.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-getethertype.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-getethertype.Tpo -c -o xtables_compat_multi-getethertype.o `test -f 'getethertype.c' || echo '$(srcdir)/'`getethertype.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-getethertype.Tpo $(DEPDIR)/xtables_compat_multi-getethertype.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='getethertype.c' object='xtables_compat_multi-getethertype.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-save.o: xtables-save.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-save.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-save.Tpo -c -o xtables_nft_multi-xtables-save.o `test -f 'xtables-save.c' || echo '$(srcdir)/'`xtables-save.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-save.Tpo $(DEPDIR)/xtables_nft_multi-xtables-save.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-save.c' object='xtables_nft_multi-xtables-save.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-getethertype.o `test -f 'getethertype.c' || echo '$(srcdir)/'`getethertype.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-save.o `test -f 'xtables-save.c' || echo '$(srcdir)/'`xtables-save.c
 
-xtables_compat_multi-getethertype.obj: getethertype.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-getethertype.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-getethertype.Tpo -c -o xtables_compat_multi-getethertype.obj `if test -f 'getethertype.c'; then $(CYGPATH_W) 'getethertype.c'; else $(CYGPATH_W) '$(srcdir)/getethertype.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-getethertype.Tpo $(DEPDIR)/xtables_compat_multi-getethertype.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='getethertype.c' object='xtables_compat_multi-getethertype.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-save.obj: xtables-save.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-save.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-save.Tpo -c -o xtables_nft_multi-xtables-save.obj `if test -f 'xtables-save.c'; then $(CYGPATH_W) 'xtables-save.c'; else $(CYGPATH_W) '$(srcdir)/xtables-save.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-save.Tpo $(DEPDIR)/xtables_nft_multi-xtables-save.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-save.c' object='xtables_nft_multi-xtables-save.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-getethertype.obj `if test -f 'getethertype.c'; then $(CYGPATH_W) 'getethertype.c'; else $(CYGPATH_W) '$(srcdir)/getethertype.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-save.obj `if test -f 'xtables-save.c'; then $(CYGPATH_W) 'xtables-save.c'; else $(CYGPATH_W) '$(srcdir)/xtables-save.c'; fi`
 
-xtables_compat_multi-nft-bridge.o: nft-bridge.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft-bridge.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft-bridge.Tpo -c -o xtables_compat_multi-nft-bridge.o `test -f 'nft-bridge.c' || echo '$(srcdir)/'`nft-bridge.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft-bridge.Tpo $(DEPDIR)/xtables_compat_multi-nft-bridge.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-bridge.c' object='xtables_compat_multi-nft-bridge.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-restore.o: xtables-restore.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-restore.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-restore.Tpo -c -o xtables_nft_multi-xtables-restore.o `test -f 'xtables-restore.c' || echo '$(srcdir)/'`xtables-restore.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-restore.Tpo $(DEPDIR)/xtables_nft_multi-xtables-restore.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-restore.c' object='xtables_nft_multi-xtables-restore.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft-bridge.o `test -f 'nft-bridge.c' || echo '$(srcdir)/'`nft-bridge.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-restore.o `test -f 'xtables-restore.c' || echo '$(srcdir)/'`xtables-restore.c
 
-xtables_compat_multi-nft-bridge.obj: nft-bridge.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-nft-bridge.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-nft-bridge.Tpo -c -o xtables_compat_multi-nft-bridge.obj `if test -f 'nft-bridge.c'; then $(CYGPATH_W) 'nft-bridge.c'; else $(CYGPATH_W) '$(srcdir)/nft-bridge.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-nft-bridge.Tpo $(DEPDIR)/xtables_compat_multi-nft-bridge.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-bridge.c' object='xtables_compat_multi-nft-bridge.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-restore.obj: xtables-restore.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-restore.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-restore.Tpo -c -o xtables_nft_multi-xtables-restore.obj `if test -f 'xtables-restore.c'; then $(CYGPATH_W) 'xtables-restore.c'; else $(CYGPATH_W) '$(srcdir)/xtables-restore.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-restore.Tpo $(DEPDIR)/xtables_nft_multi-xtables-restore.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-restore.c' object='xtables_nft_multi-xtables-restore.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-nft-bridge.obj `if test -f 'nft-bridge.c'; then $(CYGPATH_W) 'nft-bridge.c'; else $(CYGPATH_W) '$(srcdir)/nft-bridge.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-restore.obj `if test -f 'xtables-restore.c'; then $(CYGPATH_W) 'xtables-restore.c'; else $(CYGPATH_W) '$(srcdir)/xtables-restore.c'; fi`
 
-xtables_compat_multi-xtables-eb-standalone.o: xtables-eb-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-eb-standalone.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-eb-standalone.Tpo -c -o xtables_compat_multi-xtables-eb-standalone.o `test -f 'xtables-eb-standalone.c' || echo '$(srcdir)/'`xtables-eb-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-eb-standalone.Tpo $(DEPDIR)/xtables_compat_multi-xtables-eb-standalone.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-eb-standalone.c' object='xtables_compat_multi-xtables-eb-standalone.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-standalone.o: xtables-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-standalone.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-standalone.Tpo -c -o xtables_nft_multi-xtables-standalone.o `test -f 'xtables-standalone.c' || echo '$(srcdir)/'`xtables-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-standalone.Tpo $(DEPDIR)/xtables_nft_multi-xtables-standalone.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-standalone.c' object='xtables_nft_multi-xtables-standalone.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-eb-standalone.o `test -f 'xtables-eb-standalone.c' || echo '$(srcdir)/'`xtables-eb-standalone.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-standalone.o `test -f 'xtables-standalone.c' || echo '$(srcdir)/'`xtables-standalone.c
 
-xtables_compat_multi-xtables-eb-standalone.obj: xtables-eb-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-eb-standalone.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-eb-standalone.Tpo -c -o xtables_compat_multi-xtables-eb-standalone.obj `if test -f 'xtables-eb-standalone.c'; then $(CYGPATH_W) 'xtables-eb-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-eb-standalone.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-eb-standalone.Tpo $(DEPDIR)/xtables_compat_multi-xtables-eb-standalone.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-eb-standalone.c' object='xtables_compat_multi-xtables-eb-standalone.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-standalone.obj: xtables-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-standalone.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-standalone.Tpo -c -o xtables_nft_multi-xtables-standalone.obj `if test -f 'xtables-standalone.c'; then $(CYGPATH_W) 'xtables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-standalone.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-standalone.Tpo $(DEPDIR)/xtables_nft_multi-xtables-standalone.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-standalone.c' object='xtables_nft_multi-xtables-standalone.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-eb-standalone.obj `if test -f 'xtables-eb-standalone.c'; then $(CYGPATH_W) 'xtables-eb-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-eb-standalone.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-standalone.obj `if test -f 'xtables-standalone.c'; then $(CYGPATH_W) 'xtables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-standalone.c'; fi`
 
-xtables_compat_multi-xtables-eb.o: xtables-eb.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-eb.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-eb.Tpo -c -o xtables_compat_multi-xtables-eb.o `test -f 'xtables-eb.c' || echo '$(srcdir)/'`xtables-eb.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-eb.Tpo $(DEPDIR)/xtables_compat_multi-xtables-eb.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-eb.c' object='xtables_compat_multi-xtables-eb.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables.o: xtables.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables.Tpo -c -o xtables_nft_multi-xtables.o `test -f 'xtables.c' || echo '$(srcdir)/'`xtables.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables.Tpo $(DEPDIR)/xtables_nft_multi-xtables.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables.c' object='xtables_nft_multi-xtables.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-eb.o `test -f 'xtables-eb.c' || echo '$(srcdir)/'`xtables-eb.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables.o `test -f 'xtables.c' || echo '$(srcdir)/'`xtables.c
 
-xtables_compat_multi-xtables-eb.obj: xtables-eb.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-eb.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-eb.Tpo -c -o xtables_compat_multi-xtables-eb.obj `if test -f 'xtables-eb.c'; then $(CYGPATH_W) 'xtables-eb.c'; else $(CYGPATH_W) '$(srcdir)/xtables-eb.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-eb.Tpo $(DEPDIR)/xtables_compat_multi-xtables-eb.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-eb.c' object='xtables_compat_multi-xtables-eb.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables.obj: xtables.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables.Tpo -c -o xtables_nft_multi-xtables.obj `if test -f 'xtables.c'; then $(CYGPATH_W) 'xtables.c'; else $(CYGPATH_W) '$(srcdir)/xtables.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables.Tpo $(DEPDIR)/xtables_nft_multi-xtables.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables.c' object='xtables_nft_multi-xtables.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-eb.obj `if test -f 'xtables-eb.c'; then $(CYGPATH_W) 'xtables-eb.c'; else $(CYGPATH_W) '$(srcdir)/xtables-eb.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables.obj `if test -f 'xtables.c'; then $(CYGPATH_W) 'xtables.c'; else $(CYGPATH_W) '$(srcdir)/xtables.c'; fi`
 
-xtables_compat_multi-xtables-translate.o: xtables-translate.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-translate.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-translate.Tpo -c -o xtables_compat_multi-xtables-translate.o `test -f 'xtables-translate.c' || echo '$(srcdir)/'`xtables-translate.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-translate.Tpo $(DEPDIR)/xtables_compat_multi-xtables-translate.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-translate.c' object='xtables_compat_multi-xtables-translate.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft.o: nft.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft.Tpo -c -o xtables_nft_multi-nft.o `test -f 'nft.c' || echo '$(srcdir)/'`nft.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft.Tpo $(DEPDIR)/xtables_nft_multi-nft.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft.c' object='xtables_nft_multi-nft.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-translate.o `test -f 'xtables-translate.c' || echo '$(srcdir)/'`xtables-translate.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft.o `test -f 'nft.c' || echo '$(srcdir)/'`nft.c
 
-xtables_compat_multi-xtables-translate.obj: xtables-translate.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xtables-translate.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xtables-translate.Tpo -c -o xtables_compat_multi-xtables-translate.obj `if test -f 'xtables-translate.c'; then $(CYGPATH_W) 'xtables-translate.c'; else $(CYGPATH_W) '$(srcdir)/xtables-translate.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xtables-translate.Tpo $(DEPDIR)/xtables_compat_multi-xtables-translate.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-translate.c' object='xtables_compat_multi-xtables-translate.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft.obj: nft.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft.Tpo -c -o xtables_nft_multi-nft.obj `if test -f 'nft.c'; then $(CYGPATH_W) 'nft.c'; else $(CYGPATH_W) '$(srcdir)/nft.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft.Tpo $(DEPDIR)/xtables_nft_multi-nft.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft.c' object='xtables_nft_multi-nft.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xtables-translate.obj `if test -f 'xtables-translate.c'; then $(CYGPATH_W) 'xtables-translate.c'; else $(CYGPATH_W) '$(srcdir)/xtables-translate.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft.obj `if test -f 'nft.c'; then $(CYGPATH_W) 'nft.c'; else $(CYGPATH_W) '$(srcdir)/nft.c'; fi`
 
-xtables_compat_multi-xshared.o: xshared.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xshared.o -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xshared.Tpo -c -o xtables_compat_multi-xshared.o `test -f 'xshared.c' || echo '$(srcdir)/'`xshared.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xshared.Tpo $(DEPDIR)/xtables_compat_multi-xshared.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xshared.c' object='xtables_compat_multi-xshared.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft-shared.o: nft-shared.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft-shared.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft-shared.Tpo -c -o xtables_nft_multi-nft-shared.o `test -f 'nft-shared.c' || echo '$(srcdir)/'`nft-shared.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft-shared.Tpo $(DEPDIR)/xtables_nft_multi-nft-shared.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-shared.c' object='xtables_nft_multi-nft-shared.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xshared.o `test -f 'xshared.c' || echo '$(srcdir)/'`xshared.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft-shared.o `test -f 'nft-shared.c' || echo '$(srcdir)/'`nft-shared.c
 
-xtables_compat_multi-xshared.obj: xshared.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -MT xtables_compat_multi-xshared.obj -MD -MP -MF $(DEPDIR)/xtables_compat_multi-xshared.Tpo -c -o xtables_compat_multi-xshared.obj `if test -f 'xshared.c'; then $(CYGPATH_W) 'xshared.c'; else $(CYGPATH_W) '$(srcdir)/xshared.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_compat_multi-xshared.Tpo $(DEPDIR)/xtables_compat_multi-xshared.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xshared.c' object='xtables_compat_multi-xshared.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft-shared.obj: nft-shared.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft-shared.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft-shared.Tpo -c -o xtables_nft_multi-nft-shared.obj `if test -f 'nft-shared.c'; then $(CYGPATH_W) 'nft-shared.c'; else $(CYGPATH_W) '$(srcdir)/nft-shared.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft-shared.Tpo $(DEPDIR)/xtables_nft_multi-nft-shared.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-shared.c' object='xtables_nft_multi-nft-shared.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_compat_multi_CFLAGS) $(CFLAGS) -c -o xtables_compat_multi-xshared.obj `if test -f 'xshared.c'; then $(CYGPATH_W) 'xshared.c'; else $(CYGPATH_W) '$(srcdir)/xshared.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft-shared.obj `if test -f 'nft-shared.c'; then $(CYGPATH_W) 'nft-shared.c'; else $(CYGPATH_W) '$(srcdir)/nft-shared.c'; fi`
 
-xtables_multi-xtables-multi.o: xtables-multi.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-xtables-multi.o -MD -MP -MF $(DEPDIR)/xtables_multi-xtables-multi.Tpo -c -o xtables_multi-xtables-multi.o `test -f 'xtables-multi.c' || echo '$(srcdir)/'`xtables-multi.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-xtables-multi.Tpo $(DEPDIR)/xtables_multi-xtables-multi.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-multi.c' object='xtables_multi-xtables-multi.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft-ipv4.o: nft-ipv4.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft-ipv4.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft-ipv4.Tpo -c -o xtables_nft_multi-nft-ipv4.o `test -f 'nft-ipv4.c' || echo '$(srcdir)/'`nft-ipv4.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft-ipv4.Tpo $(DEPDIR)/xtables_nft_multi-nft-ipv4.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-ipv4.c' object='xtables_nft_multi-nft-ipv4.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-xtables-multi.o `test -f 'xtables-multi.c' || echo '$(srcdir)/'`xtables-multi.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft-ipv4.o `test -f 'nft-ipv4.c' || echo '$(srcdir)/'`nft-ipv4.c
 
-xtables_multi-xtables-multi.obj: xtables-multi.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-xtables-multi.obj -MD -MP -MF $(DEPDIR)/xtables_multi-xtables-multi.Tpo -c -o xtables_multi-xtables-multi.obj `if test -f 'xtables-multi.c'; then $(CYGPATH_W) 'xtables-multi.c'; else $(CYGPATH_W) '$(srcdir)/xtables-multi.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-xtables-multi.Tpo $(DEPDIR)/xtables_multi-xtables-multi.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-multi.c' object='xtables_multi-xtables-multi.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft-ipv4.obj: nft-ipv4.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft-ipv4.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft-ipv4.Tpo -c -o xtables_nft_multi-nft-ipv4.obj `if test -f 'nft-ipv4.c'; then $(CYGPATH_W) 'nft-ipv4.c'; else $(CYGPATH_W) '$(srcdir)/nft-ipv4.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft-ipv4.Tpo $(DEPDIR)/xtables_nft_multi-nft-ipv4.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-ipv4.c' object='xtables_nft_multi-nft-ipv4.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-xtables-multi.obj `if test -f 'xtables-multi.c'; then $(CYGPATH_W) 'xtables-multi.c'; else $(CYGPATH_W) '$(srcdir)/xtables-multi.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft-ipv4.obj `if test -f 'nft-ipv4.c'; then $(CYGPATH_W) 'nft-ipv4.c'; else $(CYGPATH_W) '$(srcdir)/nft-ipv4.c'; fi`
 
-xtables_multi-iptables-xml.o: iptables-xml.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-iptables-xml.o -MD -MP -MF $(DEPDIR)/xtables_multi-iptables-xml.Tpo -c -o xtables_multi-iptables-xml.o `test -f 'iptables-xml.c' || echo '$(srcdir)/'`iptables-xml.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-iptables-xml.Tpo $(DEPDIR)/xtables_multi-iptables-xml.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-xml.c' object='xtables_multi-iptables-xml.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft-ipv6.o: nft-ipv6.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft-ipv6.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft-ipv6.Tpo -c -o xtables_nft_multi-nft-ipv6.o `test -f 'nft-ipv6.c' || echo '$(srcdir)/'`nft-ipv6.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft-ipv6.Tpo $(DEPDIR)/xtables_nft_multi-nft-ipv6.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-ipv6.c' object='xtables_nft_multi-nft-ipv6.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-iptables-xml.o `test -f 'iptables-xml.c' || echo '$(srcdir)/'`iptables-xml.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft-ipv6.o `test -f 'nft-ipv6.c' || echo '$(srcdir)/'`nft-ipv6.c
 
-xtables_multi-iptables-xml.obj: iptables-xml.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-iptables-xml.obj -MD -MP -MF $(DEPDIR)/xtables_multi-iptables-xml.Tpo -c -o xtables_multi-iptables-xml.obj `if test -f 'iptables-xml.c'; then $(CYGPATH_W) 'iptables-xml.c'; else $(CYGPATH_W) '$(srcdir)/iptables-xml.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-iptables-xml.Tpo $(DEPDIR)/xtables_multi-iptables-xml.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-xml.c' object='xtables_multi-iptables-xml.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft-ipv6.obj: nft-ipv6.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft-ipv6.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft-ipv6.Tpo -c -o xtables_nft_multi-nft-ipv6.obj `if test -f 'nft-ipv6.c'; then $(CYGPATH_W) 'nft-ipv6.c'; else $(CYGPATH_W) '$(srcdir)/nft-ipv6.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft-ipv6.Tpo $(DEPDIR)/xtables_nft_multi-nft-ipv6.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-ipv6.c' object='xtables_nft_multi-nft-ipv6.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-iptables-xml.obj `if test -f 'iptables-xml.c'; then $(CYGPATH_W) 'iptables-xml.c'; else $(CYGPATH_W) '$(srcdir)/iptables-xml.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft-ipv6.obj `if test -f 'nft-ipv6.c'; then $(CYGPATH_W) 'nft-ipv6.c'; else $(CYGPATH_W) '$(srcdir)/nft-ipv6.c'; fi`
 
-xtables_multi-iptables-save.o: iptables-save.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-iptables-save.o -MD -MP -MF $(DEPDIR)/xtables_multi-iptables-save.Tpo -c -o xtables_multi-iptables-save.o `test -f 'iptables-save.c' || echo '$(srcdir)/'`iptables-save.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-iptables-save.Tpo $(DEPDIR)/xtables_multi-iptables-save.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-save.c' object='xtables_multi-iptables-save.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft-arp.o: nft-arp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft-arp.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft-arp.Tpo -c -o xtables_nft_multi-nft-arp.o `test -f 'nft-arp.c' || echo '$(srcdir)/'`nft-arp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft-arp.Tpo $(DEPDIR)/xtables_nft_multi-nft-arp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-arp.c' object='xtables_nft_multi-nft-arp.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-iptables-save.o `test -f 'iptables-save.c' || echo '$(srcdir)/'`iptables-save.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft-arp.o `test -f 'nft-arp.c' || echo '$(srcdir)/'`nft-arp.c
 
-xtables_multi-iptables-save.obj: iptables-save.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-iptables-save.obj -MD -MP -MF $(DEPDIR)/xtables_multi-iptables-save.Tpo -c -o xtables_multi-iptables-save.obj `if test -f 'iptables-save.c'; then $(CYGPATH_W) 'iptables-save.c'; else $(CYGPATH_W) '$(srcdir)/iptables-save.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-iptables-save.Tpo $(DEPDIR)/xtables_multi-iptables-save.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-save.c' object='xtables_multi-iptables-save.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft-arp.obj: nft-arp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft-arp.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft-arp.Tpo -c -o xtables_nft_multi-nft-arp.obj `if test -f 'nft-arp.c'; then $(CYGPATH_W) 'nft-arp.c'; else $(CYGPATH_W) '$(srcdir)/nft-arp.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft-arp.Tpo $(DEPDIR)/xtables_nft_multi-nft-arp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-arp.c' object='xtables_nft_multi-nft-arp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-iptables-save.obj `if test -f 'iptables-save.c'; then $(CYGPATH_W) 'iptables-save.c'; else $(CYGPATH_W) '$(srcdir)/iptables-save.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft-arp.obj `if test -f 'nft-arp.c'; then $(CYGPATH_W) 'nft-arp.c'; else $(CYGPATH_W) '$(srcdir)/nft-arp.c'; fi`
 
-xtables_multi-iptables-restore.o: iptables-restore.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-iptables-restore.o -MD -MP -MF $(DEPDIR)/xtables_multi-iptables-restore.Tpo -c -o xtables_multi-iptables-restore.o `test -f 'iptables-restore.c' || echo '$(srcdir)/'`iptables-restore.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-iptables-restore.Tpo $(DEPDIR)/xtables_multi-iptables-restore.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-restore.c' object='xtables_multi-iptables-restore.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-monitor.o: xtables-monitor.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-monitor.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-monitor.Tpo -c -o xtables_nft_multi-xtables-monitor.o `test -f 'xtables-monitor.c' || echo '$(srcdir)/'`xtables-monitor.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-monitor.Tpo $(DEPDIR)/xtables_nft_multi-xtables-monitor.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-monitor.c' object='xtables_nft_multi-xtables-monitor.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-iptables-restore.o `test -f 'iptables-restore.c' || echo '$(srcdir)/'`iptables-restore.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-monitor.o `test -f 'xtables-monitor.c' || echo '$(srcdir)/'`xtables-monitor.c
 
-xtables_multi-iptables-restore.obj: iptables-restore.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-iptables-restore.obj -MD -MP -MF $(DEPDIR)/xtables_multi-iptables-restore.Tpo -c -o xtables_multi-iptables-restore.obj `if test -f 'iptables-restore.c'; then $(CYGPATH_W) 'iptables-restore.c'; else $(CYGPATH_W) '$(srcdir)/iptables-restore.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-iptables-restore.Tpo $(DEPDIR)/xtables_multi-iptables-restore.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-restore.c' object='xtables_multi-iptables-restore.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-monitor.obj: xtables-monitor.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-monitor.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-monitor.Tpo -c -o xtables_nft_multi-xtables-monitor.obj `if test -f 'xtables-monitor.c'; then $(CYGPATH_W) 'xtables-monitor.c'; else $(CYGPATH_W) '$(srcdir)/xtables-monitor.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-monitor.Tpo $(DEPDIR)/xtables_nft_multi-xtables-monitor.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-monitor.c' object='xtables_nft_multi-xtables-monitor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-iptables-restore.obj `if test -f 'iptables-restore.c'; then $(CYGPATH_W) 'iptables-restore.c'; else $(CYGPATH_W) '$(srcdir)/iptables-restore.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-monitor.obj `if test -f 'xtables-monitor.c'; then $(CYGPATH_W) 'xtables-monitor.c'; else $(CYGPATH_W) '$(srcdir)/xtables-monitor.c'; fi`
 
-xtables_multi-iptables-standalone.o: iptables-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-iptables-standalone.o -MD -MP -MF $(DEPDIR)/xtables_multi-iptables-standalone.Tpo -c -o xtables_multi-iptables-standalone.o `test -f 'iptables-standalone.c' || echo '$(srcdir)/'`iptables-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-iptables-standalone.Tpo $(DEPDIR)/xtables_multi-iptables-standalone.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-standalone.c' object='xtables_multi-iptables-standalone.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-arp-standalone.o: xtables-arp-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-arp-standalone.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-arp-standalone.Tpo -c -o xtables_nft_multi-xtables-arp-standalone.o `test -f 'xtables-arp-standalone.c' || echo '$(srcdir)/'`xtables-arp-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-arp-standalone.Tpo $(DEPDIR)/xtables_nft_multi-xtables-arp-standalone.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-arp-standalone.c' object='xtables_nft_multi-xtables-arp-standalone.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-iptables-standalone.o `test -f 'iptables-standalone.c' || echo '$(srcdir)/'`iptables-standalone.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-arp-standalone.o `test -f 'xtables-arp-standalone.c' || echo '$(srcdir)/'`xtables-arp-standalone.c
 
-xtables_multi-iptables-standalone.obj: iptables-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-iptables-standalone.obj -MD -MP -MF $(DEPDIR)/xtables_multi-iptables-standalone.Tpo -c -o xtables_multi-iptables-standalone.obj `if test -f 'iptables-standalone.c'; then $(CYGPATH_W) 'iptables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/iptables-standalone.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-iptables-standalone.Tpo $(DEPDIR)/xtables_multi-iptables-standalone.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables-standalone.c' object='xtables_multi-iptables-standalone.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-arp-standalone.obj: xtables-arp-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-arp-standalone.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-arp-standalone.Tpo -c -o xtables_nft_multi-xtables-arp-standalone.obj `if test -f 'xtables-arp-standalone.c'; then $(CYGPATH_W) 'xtables-arp-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-arp-standalone.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-arp-standalone.Tpo $(DEPDIR)/xtables_nft_multi-xtables-arp-standalone.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-arp-standalone.c' object='xtables_nft_multi-xtables-arp-standalone.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-iptables-standalone.obj `if test -f 'iptables-standalone.c'; then $(CYGPATH_W) 'iptables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/iptables-standalone.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-arp-standalone.obj `if test -f 'xtables-arp-standalone.c'; then $(CYGPATH_W) 'xtables-arp-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-arp-standalone.c'; fi`
 
-xtables_multi-iptables.o: iptables.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-iptables.o -MD -MP -MF $(DEPDIR)/xtables_multi-iptables.Tpo -c -o xtables_multi-iptables.o `test -f 'iptables.c' || echo '$(srcdir)/'`iptables.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-iptables.Tpo $(DEPDIR)/xtables_multi-iptables.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables.c' object='xtables_multi-iptables.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-arp.o: xtables-arp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-arp.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-arp.Tpo -c -o xtables_nft_multi-xtables-arp.o `test -f 'xtables-arp.c' || echo '$(srcdir)/'`xtables-arp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-arp.Tpo $(DEPDIR)/xtables_nft_multi-xtables-arp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-arp.c' object='xtables_nft_multi-xtables-arp.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-iptables.o `test -f 'iptables.c' || echo '$(srcdir)/'`iptables.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-arp.o `test -f 'xtables-arp.c' || echo '$(srcdir)/'`xtables-arp.c
 
-xtables_multi-iptables.obj: iptables.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-iptables.obj -MD -MP -MF $(DEPDIR)/xtables_multi-iptables.Tpo -c -o xtables_multi-iptables.obj `if test -f 'iptables.c'; then $(CYGPATH_W) 'iptables.c'; else $(CYGPATH_W) '$(srcdir)/iptables.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-iptables.Tpo $(DEPDIR)/xtables_multi-iptables.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='iptables.c' object='xtables_multi-iptables.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-arp.obj: xtables-arp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-arp.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-arp.Tpo -c -o xtables_nft_multi-xtables-arp.obj `if test -f 'xtables-arp.c'; then $(CYGPATH_W) 'xtables-arp.c'; else $(CYGPATH_W) '$(srcdir)/xtables-arp.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-arp.Tpo $(DEPDIR)/xtables_nft_multi-xtables-arp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-arp.c' object='xtables_nft_multi-xtables-arp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-iptables.obj `if test -f 'iptables.c'; then $(CYGPATH_W) 'iptables.c'; else $(CYGPATH_W) '$(srcdir)/iptables.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-arp.obj `if test -f 'xtables-arp.c'; then $(CYGPATH_W) 'xtables-arp.c'; else $(CYGPATH_W) '$(srcdir)/xtables-arp.c'; fi`
 
-xtables_multi-ip6tables-save.o: ip6tables-save.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-ip6tables-save.o -MD -MP -MF $(DEPDIR)/xtables_multi-ip6tables-save.Tpo -c -o xtables_multi-ip6tables-save.o `test -f 'ip6tables-save.c' || echo '$(srcdir)/'`ip6tables-save.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-ip6tables-save.Tpo $(DEPDIR)/xtables_multi-ip6tables-save.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-save.c' object='xtables_multi-ip6tables-save.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-getethertype.o: getethertype.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-getethertype.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-getethertype.Tpo -c -o xtables_nft_multi-getethertype.o `test -f 'getethertype.c' || echo '$(srcdir)/'`getethertype.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-getethertype.Tpo $(DEPDIR)/xtables_nft_multi-getethertype.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='getethertype.c' object='xtables_nft_multi-getethertype.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-ip6tables-save.o `test -f 'ip6tables-save.c' || echo '$(srcdir)/'`ip6tables-save.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-getethertype.o `test -f 'getethertype.c' || echo '$(srcdir)/'`getethertype.c
 
-xtables_multi-ip6tables-save.obj: ip6tables-save.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-ip6tables-save.obj -MD -MP -MF $(DEPDIR)/xtables_multi-ip6tables-save.Tpo -c -o xtables_multi-ip6tables-save.obj `if test -f 'ip6tables-save.c'; then $(CYGPATH_W) 'ip6tables-save.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-save.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-ip6tables-save.Tpo $(DEPDIR)/xtables_multi-ip6tables-save.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-save.c' object='xtables_multi-ip6tables-save.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-getethertype.obj: getethertype.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-getethertype.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-getethertype.Tpo -c -o xtables_nft_multi-getethertype.obj `if test -f 'getethertype.c'; then $(CYGPATH_W) 'getethertype.c'; else $(CYGPATH_W) '$(srcdir)/getethertype.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-getethertype.Tpo $(DEPDIR)/xtables_nft_multi-getethertype.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='getethertype.c' object='xtables_nft_multi-getethertype.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-ip6tables-save.obj `if test -f 'ip6tables-save.c'; then $(CYGPATH_W) 'ip6tables-save.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-save.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-getethertype.obj `if test -f 'getethertype.c'; then $(CYGPATH_W) 'getethertype.c'; else $(CYGPATH_W) '$(srcdir)/getethertype.c'; fi`
 
-xtables_multi-ip6tables-restore.o: ip6tables-restore.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-ip6tables-restore.o -MD -MP -MF $(DEPDIR)/xtables_multi-ip6tables-restore.Tpo -c -o xtables_multi-ip6tables-restore.o `test -f 'ip6tables-restore.c' || echo '$(srcdir)/'`ip6tables-restore.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-ip6tables-restore.Tpo $(DEPDIR)/xtables_multi-ip6tables-restore.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-restore.c' object='xtables_multi-ip6tables-restore.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft-bridge.o: nft-bridge.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft-bridge.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft-bridge.Tpo -c -o xtables_nft_multi-nft-bridge.o `test -f 'nft-bridge.c' || echo '$(srcdir)/'`nft-bridge.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft-bridge.Tpo $(DEPDIR)/xtables_nft_multi-nft-bridge.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-bridge.c' object='xtables_nft_multi-nft-bridge.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-ip6tables-restore.o `test -f 'ip6tables-restore.c' || echo '$(srcdir)/'`ip6tables-restore.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft-bridge.o `test -f 'nft-bridge.c' || echo '$(srcdir)/'`nft-bridge.c
 
-xtables_multi-ip6tables-restore.obj: ip6tables-restore.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-ip6tables-restore.obj -MD -MP -MF $(DEPDIR)/xtables_multi-ip6tables-restore.Tpo -c -o xtables_multi-ip6tables-restore.obj `if test -f 'ip6tables-restore.c'; then $(CYGPATH_W) 'ip6tables-restore.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-restore.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-ip6tables-restore.Tpo $(DEPDIR)/xtables_multi-ip6tables-restore.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-restore.c' object='xtables_multi-ip6tables-restore.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-nft-bridge.obj: nft-bridge.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-nft-bridge.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-nft-bridge.Tpo -c -o xtables_nft_multi-nft-bridge.obj `if test -f 'nft-bridge.c'; then $(CYGPATH_W) 'nft-bridge.c'; else $(CYGPATH_W) '$(srcdir)/nft-bridge.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-nft-bridge.Tpo $(DEPDIR)/xtables_nft_multi-nft-bridge.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nft-bridge.c' object='xtables_nft_multi-nft-bridge.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-ip6tables-restore.obj `if test -f 'ip6tables-restore.c'; then $(CYGPATH_W) 'ip6tables-restore.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-restore.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-nft-bridge.obj `if test -f 'nft-bridge.c'; then $(CYGPATH_W) 'nft-bridge.c'; else $(CYGPATH_W) '$(srcdir)/nft-bridge.c'; fi`
 
-xtables_multi-ip6tables-standalone.o: ip6tables-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-ip6tables-standalone.o -MD -MP -MF $(DEPDIR)/xtables_multi-ip6tables-standalone.Tpo -c -o xtables_multi-ip6tables-standalone.o `test -f 'ip6tables-standalone.c' || echo '$(srcdir)/'`ip6tables-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-ip6tables-standalone.Tpo $(DEPDIR)/xtables_multi-ip6tables-standalone.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-standalone.c' object='xtables_multi-ip6tables-standalone.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-eb-standalone.o: xtables-eb-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-eb-standalone.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-eb-standalone.Tpo -c -o xtables_nft_multi-xtables-eb-standalone.o `test -f 'xtables-eb-standalone.c' || echo '$(srcdir)/'`xtables-eb-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-eb-standalone.Tpo $(DEPDIR)/xtables_nft_multi-xtables-eb-standalone.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-eb-standalone.c' object='xtables_nft_multi-xtables-eb-standalone.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-ip6tables-standalone.o `test -f 'ip6tables-standalone.c' || echo '$(srcdir)/'`ip6tables-standalone.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-eb-standalone.o `test -f 'xtables-eb-standalone.c' || echo '$(srcdir)/'`xtables-eb-standalone.c
 
-xtables_multi-ip6tables-standalone.obj: ip6tables-standalone.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-ip6tables-standalone.obj -MD -MP -MF $(DEPDIR)/xtables_multi-ip6tables-standalone.Tpo -c -o xtables_multi-ip6tables-standalone.obj `if test -f 'ip6tables-standalone.c'; then $(CYGPATH_W) 'ip6tables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-standalone.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-ip6tables-standalone.Tpo $(DEPDIR)/xtables_multi-ip6tables-standalone.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables-standalone.c' object='xtables_multi-ip6tables-standalone.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-eb-standalone.obj: xtables-eb-standalone.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-eb-standalone.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-eb-standalone.Tpo -c -o xtables_nft_multi-xtables-eb-standalone.obj `if test -f 'xtables-eb-standalone.c'; then $(CYGPATH_W) 'xtables-eb-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-eb-standalone.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-eb-standalone.Tpo $(DEPDIR)/xtables_nft_multi-xtables-eb-standalone.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-eb-standalone.c' object='xtables_nft_multi-xtables-eb-standalone.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-ip6tables-standalone.obj `if test -f 'ip6tables-standalone.c'; then $(CYGPATH_W) 'ip6tables-standalone.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables-standalone.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-eb-standalone.obj `if test -f 'xtables-eb-standalone.c'; then $(CYGPATH_W) 'xtables-eb-standalone.c'; else $(CYGPATH_W) '$(srcdir)/xtables-eb-standalone.c'; fi`
 
-xtables_multi-ip6tables.o: ip6tables.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-ip6tables.o -MD -MP -MF $(DEPDIR)/xtables_multi-ip6tables.Tpo -c -o xtables_multi-ip6tables.o `test -f 'ip6tables.c' || echo '$(srcdir)/'`ip6tables.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-ip6tables.Tpo $(DEPDIR)/xtables_multi-ip6tables.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables.c' object='xtables_multi-ip6tables.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-eb.o: xtables-eb.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-eb.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-eb.Tpo -c -o xtables_nft_multi-xtables-eb.o `test -f 'xtables-eb.c' || echo '$(srcdir)/'`xtables-eb.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-eb.Tpo $(DEPDIR)/xtables_nft_multi-xtables-eb.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-eb.c' object='xtables_nft_multi-xtables-eb.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-ip6tables.o `test -f 'ip6tables.c' || echo '$(srcdir)/'`ip6tables.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-eb.o `test -f 'xtables-eb.c' || echo '$(srcdir)/'`xtables-eb.c
 
-xtables_multi-ip6tables.obj: ip6tables.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-ip6tables.obj -MD -MP -MF $(DEPDIR)/xtables_multi-ip6tables.Tpo -c -o xtables_multi-ip6tables.obj `if test -f 'ip6tables.c'; then $(CYGPATH_W) 'ip6tables.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-ip6tables.Tpo $(DEPDIR)/xtables_multi-ip6tables.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ip6tables.c' object='xtables_multi-ip6tables.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-eb.obj: xtables-eb.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-eb.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-eb.Tpo -c -o xtables_nft_multi-xtables-eb.obj `if test -f 'xtables-eb.c'; then $(CYGPATH_W) 'xtables-eb.c'; else $(CYGPATH_W) '$(srcdir)/xtables-eb.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-eb.Tpo $(DEPDIR)/xtables_nft_multi-xtables-eb.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-eb.c' object='xtables_nft_multi-xtables-eb.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-ip6tables.obj `if test -f 'ip6tables.c'; then $(CYGPATH_W) 'ip6tables.c'; else $(CYGPATH_W) '$(srcdir)/ip6tables.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-eb.obj `if test -f 'xtables-eb.c'; then $(CYGPATH_W) 'xtables-eb.c'; else $(CYGPATH_W) '$(srcdir)/xtables-eb.c'; fi`
 
-xtables_multi-xshared.o: xshared.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-xshared.o -MD -MP -MF $(DEPDIR)/xtables_multi-xshared.Tpo -c -o xtables_multi-xshared.o `test -f 'xshared.c' || echo '$(srcdir)/'`xshared.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-xshared.Tpo $(DEPDIR)/xtables_multi-xshared.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xshared.c' object='xtables_multi-xshared.o' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-eb-translate.o: xtables-eb-translate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-eb-translate.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-eb-translate.Tpo -c -o xtables_nft_multi-xtables-eb-translate.o `test -f 'xtables-eb-translate.c' || echo '$(srcdir)/'`xtables-eb-translate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-eb-translate.Tpo $(DEPDIR)/xtables_nft_multi-xtables-eb-translate.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-eb-translate.c' object='xtables_nft_multi-xtables-eb-translate.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-xshared.o `test -f 'xshared.c' || echo '$(srcdir)/'`xshared.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-eb-translate.o `test -f 'xtables-eb-translate.c' || echo '$(srcdir)/'`xtables-eb-translate.c
 
-xtables_multi-xshared.obj: xshared.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -MT xtables_multi-xshared.obj -MD -MP -MF $(DEPDIR)/xtables_multi-xshared.Tpo -c -o xtables_multi-xshared.obj `if test -f 'xshared.c'; then $(CYGPATH_W) 'xshared.c'; else $(CYGPATH_W) '$(srcdir)/xshared.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_multi-xshared.Tpo $(DEPDIR)/xtables_multi-xshared.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xshared.c' object='xtables_multi-xshared.obj' libtool=no @AMDEPBACKSLASH@
+xtables_nft_multi-xtables-eb-translate.obj: xtables-eb-translate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-eb-translate.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-eb-translate.Tpo -c -o xtables_nft_multi-xtables-eb-translate.obj `if test -f 'xtables-eb-translate.c'; then $(CYGPATH_W) 'xtables-eb-translate.c'; else $(CYGPATH_W) '$(srcdir)/xtables-eb-translate.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-eb-translate.Tpo $(DEPDIR)/xtables_nft_multi-xtables-eb-translate.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-eb-translate.c' object='xtables_nft_multi-xtables-eb-translate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_multi_CFLAGS) $(CFLAGS) -c -o xtables_multi-xshared.obj `if test -f 'xshared.c'; then $(CYGPATH_W) 'xshared.c'; else $(CYGPATH_W) '$(srcdir)/xshared.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-eb-translate.obj `if test -f 'xtables-eb-translate.c'; then $(CYGPATH_W) 'xtables-eb-translate.c'; else $(CYGPATH_W) '$(srcdir)/xtables-eb-translate.c'; fi`
+
+xtables_nft_multi-xtables-translate.o: xtables-translate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-translate.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-translate.Tpo -c -o xtables_nft_multi-xtables-translate.o `test -f 'xtables-translate.c' || echo '$(srcdir)/'`xtables-translate.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-translate.Tpo $(DEPDIR)/xtables_nft_multi-xtables-translate.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-translate.c' object='xtables_nft_multi-xtables-translate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-translate.o `test -f 'xtables-translate.c' || echo '$(srcdir)/'`xtables-translate.c
+
+xtables_nft_multi-xtables-translate.obj: xtables-translate.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xtables-translate.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xtables-translate.Tpo -c -o xtables_nft_multi-xtables-translate.obj `if test -f 'xtables-translate.c'; then $(CYGPATH_W) 'xtables-translate.c'; else $(CYGPATH_W) '$(srcdir)/xtables-translate.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xtables-translate.Tpo $(DEPDIR)/xtables_nft_multi-xtables-translate.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtables-translate.c' object='xtables_nft_multi-xtables-translate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xtables-translate.obj `if test -f 'xtables-translate.c'; then $(CYGPATH_W) 'xtables-translate.c'; else $(CYGPATH_W) '$(srcdir)/xtables-translate.c'; fi`
+
+xtables_nft_multi-xshared.o: xshared.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xshared.o -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xshared.Tpo -c -o xtables_nft_multi-xshared.o `test -f 'xshared.c' || echo '$(srcdir)/'`xshared.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xshared.Tpo $(DEPDIR)/xtables_nft_multi-xshared.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xshared.c' object='xtables_nft_multi-xshared.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xshared.o `test -f 'xshared.c' || echo '$(srcdir)/'`xshared.c
+
+xtables_nft_multi-xshared.obj: xshared.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -MT xtables_nft_multi-xshared.obj -MD -MP -MF $(DEPDIR)/xtables_nft_multi-xshared.Tpo -c -o xtables_nft_multi-xshared.obj `if test -f 'xshared.c'; then $(CYGPATH_W) 'xshared.c'; else $(CYGPATH_W) '$(srcdir)/xshared.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/xtables_nft_multi-xshared.Tpo $(DEPDIR)/xtables_nft_multi-xshared.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xshared.c' object='xtables_nft_multi-xshared.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xtables_nft_multi_CFLAGS) $(CFLAGS) -c -o xtables_nft_multi-xshared.obj `if test -f 'xshared.c'; then $(CYGPATH_W) 'xshared.c'; else $(CYGPATH_W) '$(srcdir)/xshared.c'; fi`
 
 .l.c:
 	$(AM_V_LEX)$(am__skiplex) $(SHELL) $(YLWRAP) $< $(LEX_OUTPUT_ROOT).c $@ -- $(LEXCOMPILE)
@@ -1477,7 +1520,7 @@ uninstall-man: uninstall-man1 uninstall-man8
 .PRECIOUS: Makefile
 
 # yacc and lex generate dirty code
-@ENABLE_NFTABLES_TRUE@xtables_compat_multi-xtables-config-parser.o xtables_compat_multi-xtables-config-syntax.o: AM_CFLAGS += -Wno-missing-prototypes -Wno-missing-declarations -Wno-implicit-function-declaration -Wno-nested-externs -Wno-undef -Wno-redundant-decls
+@ENABLE_NFTABLES_TRUE@xtables_nft_multi-xtables-config-parser.o xtables_nft_multi-xtables-config-syntax.o: AM_CFLAGS += -Wno-missing-prototypes -Wno-missing-declarations -Wno-implicit-function-declaration -Wno-nested-externs -Wno-undef -Wno-redundant-decls
 
 iptables-extensions.8: iptables-extensions.8.tmpl ../extensions/matches.man ../extensions/targets.man
 	${AM_VERBOSE_GEN} sed \
@@ -1488,10 +1531,10 @@ iptables-extensions.8: iptables-extensions.8.tmpl ../extensions/matches.man ../e
 install-exec-hook:
 	-if test -z "${DESTDIR}"; then /sbin/ldconfig; fi;
 	${INSTALL} -dm0755 "${DESTDIR}${bindir}";
-	for i in ${vx_bin_links}; do ${LN_S} -f "${sbindir}/xtables-multi" "${DESTDIR}${bindir}/$$i"; done;
-	for i in ${v4_sbin_links}; do ${LN_S} -f xtables-multi "${DESTDIR}${sbindir}/$$i"; done;
-	for i in ${v6_sbin_links}; do ${LN_S} -f xtables-multi "${DESTDIR}${sbindir}/$$i"; done;
-	for i in ${x_sbin_links}; do ${LN_S} -f xtables-compat-multi "${DESTDIR}${sbindir}/$$i"; done;
+	for i in ${vx_bin_links}; do ${LN_S} -f "${sbindir}/xtables-legacy-multi" "${DESTDIR}${bindir}/$$i"; done;
+	for i in ${v4_sbin_links}; do ${LN_S} -f xtables-legacy-multi "${DESTDIR}${sbindir}/$$i"; done;
+	for i in ${v6_sbin_links}; do ${LN_S} -f xtables-legacy-multi "${DESTDIR}${sbindir}/$$i"; done;
+	for i in ${x_sbin_links}; do ${LN_S} -f xtables-nft-multi "${DESTDIR}${sbindir}/$$i"; done;
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -10,8 +10,7 @@ If you would like to migrate or translate your previous
 iptables/ip6tables/arptables/ebtables rulesets to nftables then keep reading.
 
 There are some tools in place to help you moving from iptables to nftables,
-(tools included in `iptables-nftables-compat` package) following 2 basic
-approaches:
+following 2 basic approaches:
 
  * command line translation
    (iptables-translate, iptables-restore-translate,
@@ -43,30 +42,25 @@ The legacy binaries are now installed as:
  * /sbin/arptables-legacy (in the arptables Debian package)
  * /sbin/ebtables-legacy (in the ebtables Debian package)
 
-The compat tools (tools which accepts the legacy syntax but use the nf_tables
+The nft-based tools (tools which accepts the legacy syntax but use the nf_tables
 kernel subsystem) are installed as:
 
- * /sbin/iptables-compat
- * /sbin/iptables-compat-restore
- * /sbin/iptables-compat-save
- * /sbin/ip6tables-compat
- * /sbin/ip6tables-compat-restore
- * /sbin/ip6tables-compat-save
- * /sbin/arptables-compat
- * /sbin/ebtables-compat
+ * /sbin/iptables-nft
+ * /sbin/iptables-nft-restore
+ * /sbin/iptables-nft-save
+ * /sbin/ip6tables-nft
+ * /sbin/ip6tables-nft-restore
+ * /sbin/ip6tables-nft-save
+ * /sbin/arptables-nft
+ * /sbin/ebtables-nft
 
-All of them from the `iptables-nftables-compat` Debian package and have more
-default priority, which means that if you install that package, you will be
-using the compat tools instead of the legacy ones.
+The iptables Debian package install both and gives the nft version more
+priority by default in the update-alternatives system. This means that if you
+install that package, you will be using the compat tools instead of the legacy
+ones.
+Remember, you can change this at runtime using the `update-alternatives`
+command.
 
-You can change this at runtime using the `update-alternatives` command.
-
-NOTE: make sure you don't mix iptables-legacy and iptables-compat (nftables)
-rulesets in the same machine at the same time just for sanity and to avoid
-unexpected behaviours in your network.
-
-future
-======
-
-Right now Debian includes by default iptables-legacy in every system
-installation. In a mid-long term future this will change in favour of nftables.
+NOTE: make sure you don't mix iptables-legacy and iptables-nft rulesets in the
+same machine at the same time just for sanity and to avoid unexpected
+behaviours in your network.

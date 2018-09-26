@@ -12,13 +12,3 @@ LIB_DIR := /usr/lib/$(DEB_HOST_MULTIARCH)
 override_dh_auto_configure:
 	dh_auto_configure -- --disable-libipq --enable-devel \
 			--libdir=$(LIB_DIR) --with-xtlibdir=$(LIB_DIR)/xtables
-
-override_dh_install:
-	dh_install
-	# leave room for having the nftables compat tools as the main binaries
-	mv debian/iptables/sbin/iptables debian/iptables/sbin/iptables-legacy
-	mv debian/iptables/sbin/iptables-restore debian/iptables/sbin/iptables-legacy-restore
-	mv debian/iptables/sbin/iptables-save debian/iptables/sbin/iptables-legacy-save
-	mv debian/iptables/sbin/ip6tables debian/iptables/sbin/ip6tables-legacy
-	mv debian/iptables/sbin/ip6tables-restore debian/iptables/sbin/ip6tables-legacy-restore
-	mv debian/iptables/sbin/ip6tables-save debian/iptables/sbin/ip6tables-legacy-save

@@ -3,8 +3,12 @@
 set -e
 
 if [ "$1" != "upgrade" ]; then
-    update-alternatives --remove iptables /sbin/iptables-legacy
-    update-alternatives --remove ip6tables /sbin/ip6tables-legacy
+    update-alternatives --remove iptables /usr/sbin/iptables-legacy
+    update-alternatives --remove ip6tables /usr/sbin/ip6tables-legacy
+    update-alternatives --remove iptables /usr/sbin/iptables-nft
+    update-alternatives --remove ip6tables /usr/sbin/ip6tables-nft
+    update-alternatives --remove arptables /usr/sbin/arptables-nft
+    update-alternatives --remove ebtables /usr/sbin/ebtables-nft
 fi
 
 #DEBHELPER#

@@ -29,6 +29,8 @@ Depends: libip4tc0 (=${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
 Suggests: kmod
+Breaks: iptables-nftables-compat (<< 1.6.2~)
+Replaces: iptables-nftables-compat (<< 1.6.2~)
 Description: administration tools for packet filtering and NAT
  iptables is the userspace command line program used to configure
  the Linux packet filtering ruleset. It is targeted towards system
@@ -177,34 +179,3 @@ Description: Development files for libip6tc
  sense of changing symbols and backward compatibility not guaranteed.
  .
  This package provides development files and static libraries.
-
-Package: iptables-nftables-compat
-Architecture: linux-any
-Priority: optional
-Depends: arptables,
-         ebtables,
-         iptables (=${binary:Version}),
-         libxtables12 (=${binary:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Recommends: nftables
-Suggests: kmod
-Breaks: iptables (<< 1.6.2-1)
-Description: iptables compat tools for nftables
- this package includes the compat tools to load iptables, ip6tables, arptables
- and ebtables rules to the nf_tables kernel subsystem.
- .
- The tools are called: 'iptables-compat', 'iptables-compat-save',
- 'iptables-compat-restore', 'ip6tables-compat', 'ip6tables-compat-save',
- 'ip6tables-compat-restore', 'arptables-compat' and 'ebtables-compat'.
- .
- A basic way to understand this compat stuff is to load the ruleset
- skeleton, i.e: a first call `iptables-compat -L'. Then, you can use nft,
- i.e: `nft list ruleset'. Same for the other families.
- .
- Also, this package contains the translation tools, which are
- 'iptables-translate', 'ip6tables-translate', 'iptables-restore-translate',
- and 'ip6tables-restore-translate'.
- .
- These translation tools works by reading an input in iptables native syntax
- and then  printing the nftables syntax equivalent.

@@ -20,7 +20,7 @@ Index: pkg-iptables/iptables/Makefile.am
                     xtables-nft.8 xtables-translate.8 xtables-legacy.8 \
 -                   xtables-monitor.8
 +                   xtables-monitor.8 iptables-apply.8 ip6tables-apply.8
-+sbion_SCRIPT	 = iptables-apply
++sbin_SCRIPT	 = iptables-apply
  CLEANFILES       = iptables.8 xtables-monitor.8 \
  		   xtables-config-parser.c xtables-config-syntax.c
  

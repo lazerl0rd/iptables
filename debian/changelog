@@ -1,3 +1,28 @@
+iptables (1.8.0-1~exp1) experimental; urgency=medium
+
+  * [5c9fe9f] d/t/control: allow stderr in several tests
+  * [031303e] iptables: introduce alternatives for /sbin/iptables and friends
+  * [e9b2bc3] d/control: adjust package relationship between alternatives
+  * [c958b71] d/README.Debian: refresh file
+  * [cbc1b5a] iptables-nftables-compat: update manpages
+  * [5cda5e1] d/README.source: drop file
+  * [278668f] New upstream version 1.8.0
+  * [8497323] d/patches/: refresh 0301-install_iptables_apply.patch
+  * [f6022b6] d/patches/: refresh 0201-660748-iptables_apply_man.patch
+  * [de3df70] iptables: merge iptables-nftables-compat package
+  * [9e6437c] d/libxtables12.symbols: refresh file
+  * [7f8aa9f] debian/patches/series:0301-install_iptables_apply.patch: typo sbion
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Thu, 27 Sep 2018 13:47:59 +0200
+
+iptables (1.6.2-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload with maintainer approval (#889649).
+  * Cherry-pick [3d13411] by Arturo Borrero Gonzalez to update
+    d/iptables.manpages.  (Closes: #889649)
+
+ -- Niels Thykier <niels@thykier.net>  Tue, 07 Aug 2018 09:43:28 +0000
+
 iptables (1.6.2-1) unstable; urgency=medium
 
   * [a82b926] d/control: update git URLs

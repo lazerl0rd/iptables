@@ -1,0 +1,13 @@
+Index: pkg-iptables/iptables/Makefile.am
+===================================================================
+--- pkg-iptables.orig/iptables/Makefile.am
++++ pkg-iptables/iptables/Makefile.am
+@@ -80,7 +80,7 @@ x_sbin_links  = iptables-nft iptables-nf
+ 		ip6tables-nft ip6tables-nft-restore ip6tables-nft-save \
+ 		iptables-translate ip6tables-translate \
+ 		iptables-restore-translate ip6tables-restore-translate \
+-		arptables ebtables xtables-monitor
++		arptables-nft ebtables-nft xtables-monitor
+ endif
+ 
+ iptables-extensions.8: iptables-extensions.8.tmpl ../extensions/matches.man ../extensions/targets.man

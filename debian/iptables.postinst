@@ -4,7 +4,7 @@ set -e
 
 if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ]; then
 	update-alternatives \
-	  --install /usr/sbin/ìptables iptables /usr/sbin/iptables-legacy 10 \
+	  --install /usr/sbin/iptables iptables /usr/sbin/iptables-legacy 10 \
 	  --slave /usr/sbin/iptables-restore iptables-restore /usr/sbin/iptables-legacy-restore \
 	  --slave /usr/sbin/iptables-save iptables-save /usr/sbin/iptables-legacy-save
 	update-alternatives \

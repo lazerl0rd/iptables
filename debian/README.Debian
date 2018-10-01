@@ -17,15 +17,15 @@ following 2 basic approaches:
    ip6tables-translate, ip6tables-restore-translate)
 
  * syntax reuse with nf_tables backend
-   (iptables-compat, iptables-compat-restore, iptables-compat-save,
-   ip6tables-compat, ip6tables-compat-restore, ip6tables-compat-save,
-   arptables-compat, ebtables-compat)
+   (iptables-nft, iptables-nft-restore, iptables-nft-save,
+   ip6tables-nft, ip6tables-nft-restore, ip6tables-nft-save,
+   arptables-nft, ebtables-nft)
 
 Documentation on how to use these tools can be found at:
 
  * https://wiki.debian.org/Moving_from_iptables_to_nftables
  * https://wiki.nftables.org/wiki-nftables/index.php/Moving_from_iptables_to_nftables
- * xtables-compat(8) manpage
+ * xtables-nft(8) manpage
  * xtables-translate(8) manpage
 
 alternatives
@@ -56,7 +56,7 @@ kernel subsystem) are installed as:
 
 The iptables Debian package install both and gives the nft version more
 priority by default in the update-alternatives system. This means that if you
-install that package, you will be using the compat tools instead of the legacy
+install that package, you will be using the nft tools instead of the legacy
 ones.
 Remember, you can change this at runtime using the `update-alternatives`
 command.

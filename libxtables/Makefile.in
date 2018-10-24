@@ -140,7 +140,7 @@ am__DEPENDENCIES_1 =
 libxtables_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am_libxtables_la_OBJECTS = libxtables_la-xtables.lo \
-	libxtables_la-xtoptions.lo
+	libxtables_la-xtoptions.lo libxtables_la-getethertype.lo
 libxtables_la_OBJECTS = $(am_libxtables_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -366,7 +366,7 @@ xtlibdir = @xtlibdir@
 AM_CFLAGS = ${regular_CFLAGS}
 AM_CPPFLAGS = ${regular_CPPFLAGS} -I${top_builddir}/include -I${top_srcdir}/include -I${top_srcdir}/iptables ${kinclude_CPPFLAGS}
 lib_LTLIBRARIES = libxtables.la
-libxtables_la_SOURCES = xtables.c xtoptions.c
+libxtables_la_SOURCES = xtables.c xtoptions.c getethertype.c
 libxtables_la_LDFLAGS = -version-info ${libxtables_vcurrent}:0:${libxtables_vage}
 libxtables_la_LIBADD = $(am__append_1) $(am__append_2)
 @ENABLE_SHARED_FALSE@libxtables_la_CFLAGS = ${AM_CFLAGS} -DNO_SHARED_LIBS=1
@@ -449,6 +449,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxtables_la-getethertype.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxtables_la-xtables.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxtables_la-xtoptions.Plo@am__quote@
 
@@ -486,6 +487,13 @@ libxtables_la-xtoptions.lo: xtoptions.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xtoptions.c' object='libxtables_la-xtoptions.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxtables_la_CFLAGS) $(CFLAGS) -c -o libxtables_la-xtoptions.lo `test -f 'xtoptions.c' || echo '$(srcdir)/'`xtoptions.c
+
+libxtables_la-getethertype.lo: getethertype.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxtables_la_CFLAGS) $(CFLAGS) -MT libxtables_la-getethertype.lo -MD -MP -MF $(DEPDIR)/libxtables_la-getethertype.Tpo -c -o libxtables_la-getethertype.lo `test -f 'getethertype.c' || echo '$(srcdir)/'`getethertype.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libxtables_la-getethertype.Tpo $(DEPDIR)/libxtables_la-getethertype.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='getethertype.c' object='libxtables_la-getethertype.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxtables_la_CFLAGS) $(CFLAGS) -c -o libxtables_la-getethertype.lo `test -f 'getethertype.c' || echo '$(srcdir)/'`getethertype.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

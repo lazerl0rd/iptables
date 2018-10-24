@@ -1,3 +1,19 @@
+iptables (1.8.1-1) unstable; urgency=medium
+
+  * [85fe398] d/iptables.postinst: fix typo in update-alternative command.
+    Thanks to Pedretti Fabio <pedretti.fabio@gmail.com>
+  * [698f251] d/README.Debian: more compat renames.
+    Thanks to Pedretti Fabio <pedretti.fabio@gmail.com>
+  * [dab1e98] New upstream version 1.8.1
+  * [02ed7af] d/patches: drop 0000-arptables-ebtables-nft.patch
+  * [d7deb51] d/patches: refresh 0401-580941-iptables_apply_update.patch
+  * [1ed5805] d/libxtables12.symbols: add new symbols
+  * [b7d2530] d/README.Debian: refresh paths
+  * [650f9cd] d/iptables.postinst: include new alternatives for {arp,eb}tables
+  * [da869a7] d/: include NEWS file
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Wed, 24 Oct 2018 14:17:46 +0200
+
 iptables (1.8.0-1~exp1) experimental; urgency=medium
 
   * [5c9fe9f] d/t/control: allow stderr in several tests

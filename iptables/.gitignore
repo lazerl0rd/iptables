@@ -14,8 +14,11 @@
 /iptables-xml
 /iptables-xml.1
 /xtables-multi
+/xtables-legacy-multi
+/xtables-nft-multi
 /xtables-config-parser.c
 /xtables-config-parser.h
 /xtables-config-syntax.c
+/xtables-monitor.8
 
 /xtables.pc

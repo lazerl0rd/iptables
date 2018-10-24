@@ -19,7 +19,8 @@ following 2 basic approaches:
  * syntax reuse with nf_tables backend
    (iptables-nft, iptables-nft-restore, iptables-nft-save,
    ip6tables-nft, ip6tables-nft-restore, ip6tables-nft-save,
-   arptables-nft, ebtables-nft)
+   arptables-nft, arptables-nft-save, arptables-nft-restore,
+   ebtables-nft, ebtables-nft-save, ebtables-nft-restore)
 
 Documentation on how to use these tools can be found at:
 
@@ -52,7 +53,11 @@ kernel subsystem) are installed as:
  * /usr/sbin/ip6tables-nft-restore
  * /usr/sbin/ip6tables-nft-save
  * /usr/sbin/arptables-nft
+ * /usr/sbin/arptables-nft-restore
+ * /usr/sbin/arptables-nft-save
  * /usr/sbin/ebtables-nft
+ * /usr/sbin/ebtables-nft-restore
+ * /usr/sbin/ebtables-nft-save
 
 The iptables Debian package install both and gives the nft version more
 priority by default in the update-alternatives system. This means that if you

@@ -20,9 +20,13 @@ if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ]; then
           --slave /usr/sbin/ip6tables-restore ip6tables-restore /usr/sbin/ip6tables-nft-restore \
           --slave /usr/sbin/ip6tables-save ip6tables-save /usr/sbin/ip6tables-nft-save
         update-alternatives \
-          --install /usr/sbin/arptables arptables /usr/sbin/arptables-nft 20
+          --install /usr/sbin/arptables arptables /usr/sbin/arptables-nft 20 \
+          --slave /usr/sbin/arptables-restore arptables-restore /usr/sbin/arptables-nft-restore \
+          --slave /usr/sbin/arptables-save arptables-save /usr/sbin/arptables-nft-save
         update-alternatives \
-          --install /usr/sbin/ebtables ebtables /usr/sbin/ebtables-nft 20
+          --install /usr/sbin/ebtables ebtables /usr/sbin/ebtables-nft 20 \
+          --slave /usr/sbin/ebtables-restore ebtables-restore /usr/sbin/ebtables-nft-restore \
+          --slave /usr/sbin/ebtables-save ebtables-save /usr/sbin/ebtables-nft-save
 fi
 
 #DEBHELPER#

@@ -33,30 +33,30 @@ alternatives
 
 The legacy binaries are now installed as:
 
- * /sbin/iptables-legacy
- * /sbin/iptables-legacy-restore
- * /sbin/iptables-legacy-save
- * /sbin/ip6tables-legacy
- * /sbin/ip6tables-legacy-restore
- * /sbin/ip6tables-legacy-save
- * /sbin/arptables-legacy (in the arptables Debian package)
- * /sbin/ebtables-legacy (in the ebtables Debian package)
+ * /usr/sbin/iptables-legacy
+ * /usr/sbin/iptables-legacy-restore
+ * /usr/sbin/iptables-legacy-save
+ * /usr/sbin/ip6tables-legacy
+ * /usr/sbin/ip6tables-legacy-restore
+ * /usr/sbin/ip6tables-legacy-save
+ * /usr/sbin/arptables-legacy (in the arptables Debian package)
+ * /usr/sbin/ebtables-legacy (in the ebtables Debian package)
 
 The nft-based tools (tools which accepts the legacy syntax but use the nf_tables
 kernel subsystem) are installed as:
 
- * /sbin/iptables-nft
- * /sbin/iptables-nft-restore
- * /sbin/iptables-nft-save
- * /sbin/ip6tables-nft
- * /sbin/ip6tables-nft-restore
- * /sbin/ip6tables-nft-save
- * /sbin/arptables-nft
- * /sbin/ebtables-nft
+ * /usr/sbin/iptables-nft
+ * /usr/sbin/iptables-nft-restore
+ * /usr/sbin/iptables-nft-save
+ * /usr/sbin/ip6tables-nft
+ * /usr/sbin/ip6tables-nft-restore
+ * /usr/sbin/ip6tables-nft-save
+ * /usr/sbin/arptables-nft
+ * /usr/sbin/ebtables-nft
 
 The iptables Debian package install both and gives the nft version more
 priority by default in the update-alternatives system. This means that if you
-install that package, you will be using the nft tools instead of the legacy
+install this package, you will be using the nft tools instead of the legacy
 ones.
 Remember, you can change this at runtime using the `update-alternatives`
 command.

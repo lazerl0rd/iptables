@@ -1,3 +1,9 @@
+iptables (1.8.1-2) unstable; urgency=medium
+
+  * [5edbd6e] iptables: introduce /sbin compatibility symlinks (Closes: #911777)
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Thu, 25 Oct 2018 13:27:15 +0200
+
 iptables (1.8.1-1) unstable; urgency=medium
 
   * [85fe398] d/iptables.postinst: fix typo in update-alternative command.

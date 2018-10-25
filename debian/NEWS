@@ -1,3 +1,12 @@
+iptables (1.8.1-2) unstable; urgency=medium
+
+    All the iptables binaries has been moved away from /sbin to /usr/sbin.
+    Some compatibility symlinks have ben added for the Buster release cycle,
+    but please make sure your scripts aren't using hardcoded binary paths.
+    The plan after Buster is to drop the symlinks.
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Wed,  25 Oct 2018 12:00:00 +0200
+
 iptables (1.8.1-1) unstable; urgency=medium
 
     By default, this package will try to use the nf_tables kernel backend

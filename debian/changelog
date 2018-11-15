@@ -1,3 +1,22 @@
+iptables (1.8.2-1) unstable; urgency=medium
+
+  * This upstream release closes several bugs:
+    Closes: #913742
+    Closes: #913114
+    Closes: #816087
+    Closes: #913088
+    Closes: #912607
+    Closes: #912610
+  * [0309474] New upstream version 1.8.2
+  * [5d3a638] d/t/control: replace compat names with nft ones
+  * [31d2d6e] d/NEWS: fix typos (Closes: #912981)
+  * [b24cf92] iptables: don't ship paths served by update-alternatives
+    (Closes: #911899)
+  * [f5ec47b] d/patches: cherry-pick format-security_fixes_in_libip[6]t_icmp.patch
+  * [2017f99] d/libxtables12.symbols: add new symbols
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Thu, 15 Nov 2018 12:33:36 +0100
+
 iptables (1.8.1-2) unstable; urgency=medium
 
   * [5edbd6e] iptables: introduce /sbin compatibility symlinks (Closes: #911777)

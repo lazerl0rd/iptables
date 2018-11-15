@@ -1,7 +1,7 @@
 iptables (1.8.1-2) unstable; urgency=medium
 
-    All the iptables binaries has been moved away from /sbin to /usr/sbin.
-    Some compatibility symlinks have ben added for the Buster release cycle,
+    All the iptables binaries have been moved away from /sbin to /usr/sbin.
+    Some compatibility symlinks have been added for the Buster release cycle,
     but please make sure your scripts aren't using hardcoded binary paths.
     The plan after Buster is to drop the symlinks.
 

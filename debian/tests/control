@@ -22,35 +22,35 @@ Test-Command: ip6tables-restore -h
 Depends: @
 Restrictions: needs-root, isolation-container, allow-stderr
 
-Test-Command: iptables-compat -h
+Test-Command: iptables-nft -h
 Depends: @
 Restrictions: needs-root, isolation-container
 
-Test-Command: ip6tables-compat -h
+Test-Command: ip6tables-nft -h
 Depends: @
 Restrictions: needs-root, isolation-container
 
-Test-Command: iptables-compat-save
+Test-Command: iptables-nft-save
 Depends: @
 Restrictions: needs-root, isolation-container
 
-Test-Command: ip6tables-compat-save
+Test-Command: ip6tables-nft-save
 Depends: @
 Restrictions: needs-root, isolation-container
 
-Test-Command: iptables-compat-restore -h
+Test-Command: iptables-nft-restore -h
 Depends: @
 Restrictions: needs-root, isolation-container, allow-stderr
 
-Test-Command: ip6tables-compat-restore -h
+Test-Command: ip6tables-nft-restore -h
 Depends: @
 Restrictions: needs-root, isolation-container, allow-stderr
 
-Test-Command: arptables-compat -h
+Test-Command: arptables-nft -h
 Depends: @
 Restrictions: needs-root, isolation-container
 
-Test-Command: ebtables-compat -h
+Test-Command: ebtables-nft -h
 Depends: @
 Restrictions: needs-root, isolation-container
 

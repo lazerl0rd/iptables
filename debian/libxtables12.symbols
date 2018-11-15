@@ -64,6 +64,8 @@ libxtables.so.12 libxtables12 #MINVER#
  xtables_parse_val_mask@Base 1.8.0
  xtables_pending_matches@Base 1.6.0+snapshot20161117
  xtables_pending_targets@Base 1.6.0+snapshot20161117
+ xtables_print_mac@Base 1.8.2
+ xtables_print_mac_and_mask@Base 1.8.2
  xtables_print_num@Base 1.6.0+snapshot20161117
  xtables_print_val_mask@Base 1.8.0
  xtables_realloc@Base 1.6.0+snapshot20161117

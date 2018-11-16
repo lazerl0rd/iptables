@@ -1,3 +1,11 @@
+iptables (1.8.2-2) unstable; urgency=medium
+
+  * [fb09c23] iptables: fixes for /sbin symlinks (Closes: #913811)
+  * [60b3924] d/t/control: disable tests for ip[6]tables-restore-translate
+  * [8f93912] iptables.prerm: change cleanup order
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Tue, 20 Nov 2018 10:54:37 +0100
+
 iptables (1.8.2-1) unstable; urgency=medium
 
   * This upstream release closes several bugs:

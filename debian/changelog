@@ -1,3 +1,13 @@
+iptables (1.8.2-3) unstable; urgency=medium
+
+  * [b58e329] d/control: bump std-version to 4.3.0
+  * [998fa1e] d/control: add pointers to nftables
+  * [4adb176] d/iptables.links: add manpage links
+  * [45c7e9c] d/changelog: cleanup trailing whitespaces
+  * [eda1593] d/: run wrap-and-sort
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Fri, 28 Dec 2018 12:57:19 +0100
+
 iptables (1.8.2-2) unstable; urgency=medium
 
   * [fb09c23] iptables: fixes for /sbin symlinks (Closes: #913811)

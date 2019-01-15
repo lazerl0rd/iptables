@@ -2,6 +2,8 @@
 
 export DH_VERBOSE=1
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+# used by iptables extensions/ makefile to be verbose:
+export V=1
 
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 LIB_DIR := /usr/lib/$(DEB_HOST_MULTIARCH)

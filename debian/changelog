@@ -1,3 +1,11 @@
+iptables (1.8.2-4) unstable; urgency=medium
+
+  * [5053b60] d/rules: reintroduce V=1
+  * [80bea53] d/patches: add patch cherry picked from upstream (Closes: #922973)
+  * [a9abea9] src:iptables: add salsa CI integration
+
+ -- Arturo Borrero Gonzalez <arturo@debian.org>  Fri, 01 Mar 2019 13:28:35 +0100
+
 iptables (1.8.2-3) unstable; urgency=medium
 
   * [b58e329] d/control: bump std-version to 4.3.0
